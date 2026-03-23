@@ -94,7 +94,7 @@ builder.Services.AddOpenApi("v1");
 
 // 4. Servicios personalizados
 
-builder.Services.AddSingleton<dVehicle>();
+builder.Services.AddSingleton<dMaster>();
 builder.Services.AddSingleton<RefreshTokenStore>();
 
 // 5. crear app
