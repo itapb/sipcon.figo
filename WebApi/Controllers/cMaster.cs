@@ -5,6 +5,7 @@ using Data;
 using DocumentFormat.OpenXml.EMMA;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration.UserSecrets;
@@ -71,13 +72,19 @@ namespace WebApi.Controllers
 
 
         [HttpPost("PostModels")]
-        public async Task<IActionResult> Post_Models(List<Models.Model> models)
+        public async Task<IActionResult> Post_Models([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.Model> models)
         {
 
             try
             {
-                var _response = await _dMaster.Post_Models(models);
-                return StatusCode(_response.Status, _response);
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                 response = await _dMaster.Post_Models(models);
+                return StatusCode(response.Status, response);
             }
             catch (Exception ex)
             {
