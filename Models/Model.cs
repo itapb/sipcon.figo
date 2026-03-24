@@ -8,7 +8,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Models
 {
-    public class Model:Record   
+    public class Model  
 
     {
 
