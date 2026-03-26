@@ -1,112 +1,26 @@
-﻿
-using System.Data;
+﻿using System.Data;
 using Models;
 using Util;
 
 namespace Data
 {
-    public class dMaster
+    public class dTransaction
     {
-
         private readonly SemaphoreSlim _semaphore;
-        public dMaster()
-        {
 
+        public dTransaction()
+        {
             Util.Setting.GetSettings(true);
             _semaphore = new SemaphoreSlim(100, 150);
         }
 
-
-        public async Task<Response<Models.Result>> PostParts(List<Models.Part> _list)
+        #region RECEPCION DE REPUESTOS
+        public async Task<Response<Models.Result>> PostReceptionParts(List<Models.ReceptionParts> _list)
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
             {
-                return await _PostParts(_list);
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-        }
-        private async Task<Response<Models.Result>> _PostParts(List<Models.Part> _list)
-        {
-            Response<Models.Result> _response = new Response<Models.Result>();
-
-            try
-            {
-                string _jsonstring = Util.Json.ConvertToJsonString(_list);
-
-                Parameter _parameter = new Parameter();
-                _parameter.AddSqlParameter("@DATA", _jsonstring);
-
-                Mapping _mapping = new Mapping();
-                _mapping.SetDefaultPostMapping();
-
-
-                Util.Data _data = Util.Data.GetInstance();
-                DataTable _table = await _data.GetDataTable("USP_POST_PARTS_FIGO", _parameter);
-                _response.Data = _data.GetItem<Models.Result>(_mapping, _table);
-                _response.SetPostResponse();
-
-
-            }
-            catch (Exception ex)
-            {
-                _response.SetError(ex);
-            }
-
-            return _response;
-        }
-        public async Task<Response<Models.Result>> PostContacts(List<Models.Contact> _list)
-        {
-            await _semaphore.WaitAsync(Util.Setting.TimeOut);
-            try
-            {
-                return await _PostContacts(_list);
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-        }
-        private async Task<Response<Models.Result>> _PostContacts(List<Contact> _list)
-        {
-            Response<Models.Result> _response = new Response<Models.Result>();
-
-            try
-            {
-                string _jsonstring = Util.Json.ConvertToJsonString(_list);
-
-                Parameter _parameter = new Parameter();
-                _parameter.AddSqlParameter("@DATA", _jsonstring);
-
-                Mapping _mapping = new Mapping();
-                _mapping.SetDefaultPostMapping();
-
-
-                Util.Data _data = Util.Data.GetInstance();
-                DataTable _table = await _data.GetDataTable("USP_POST_CONTACTS_FIGO", _parameter);
-                _response.Data = _data.GetItem<Models.Result>(_mapping, _table);
-                _response.SetPostResponse();
-
-
-            }
-            catch (Exception ex)
-            {
-                _response.SetError(ex);
-            }
-
-            return _response;
-        }
-
-        #region MODELOS
-        public async Task<Response<Models.Result>> Post_Models(List<Model> _list)
-        {
-            await _semaphore.WaitAsync(Util.Setting.TimeOut);
-            try
-            {
-                return await _Post_Models(_list);
+                return await _PostReceptionParts(_list);
             }
             finally
             {
@@ -114,52 +28,7 @@ namespace Data
             }
         }
 
-        private async Task<Response<Models.Result>> _Post_Models(List<Model> _list)
-        {
-            Response<Models.Result> _response = new Response<Models.Result>();
-
-            try
-            {
-                string _jsonstring = Util.Json.ConvertToJsonString(_list);
-
-                Parameter _parameter = new Parameter();
-                _parameter.AddSqlParameter("@DATA", _jsonstring);
-
-                Mapping _mapping = new Mapping();
-                _mapping.SetDefaultPostMapping();
-
-
-
-                Util.Data _data = Util.Data.GetInstance();
-                DataTable _table = await _data.GetDataTable("USP_POST_MODELS_FIGO", _parameter);
-                _response.Data = _data.GetItem<Models.Result>(_mapping, _table);
-                _response.SetPostResponse();
-
-            }
-            catch (Exception ex)
-            {
-                _response.SetError(ex);
-            }
-
-            return _response;
-        }
-        #endregion
-
-        #region LISTA DE PRECIOS
-        public async Task<Response<Models.Result>> PostPriceList(List<Models.PriceList> _list)
-        {
-            await _semaphore.WaitAsync(Util.Setting.TimeOut);
-            try
-            {
-                return await _PostPriceList(_list);
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-        }
-
-        private async Task<Response<Models.Result>> _PostPriceList(List<Models.PriceList> _list)
+        private async Task<Response<Models.Result>> _PostReceptionParts(List<Models.ReceptionParts> _list)
         {
             Response<Models.Result> _response = new Response<Models.Result>();
             try
@@ -170,7 +39,7 @@ namespace Data
                 Mapping _mapping = new Mapping();
                 _mapping.SetDefaultPostMapping();
                 Util.Data _data = Util.Data.GetInstance();
-                DataTable _table = await _data.GetDataTable("USP_POST_PRICELIST_FIGO", _parameter);
+                DataTable _table = await _data.GetDataTable("USP_POST_RECEPTIONPARTS_FIGO", _parameter);
                 _response.Data = _data.GetItem<Models.Result>(_mapping, _table);
                 _response.SetPostResponse();
             }
@@ -182,5 +51,117 @@ namespace Data
         }
         #endregion
 
+        #region DESPACHOS POR FACTURAR
+        public async Task<Response<List<Models.DispatchsToInvoincing>>> GetDispatchsToInvoicing()
+        {
+            await _semaphore.WaitAsync(Util.Setting.TimeOut);
+            try
+            {
+                return await _GetDispatchsToInvoicing();
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+        private async Task<Response<List<Models.DispatchsToInvoincing>>> _GetDispatchsToInvoicing()
+        {
+            Response<List<Models.DispatchsToInvoincing>> _response = new Response<List<Models.DispatchsToInvoincing>>();
+            try
+            {
+                Mapping _mapping = new Mapping();
+                _mapping.AddItem("Reference", "IDCONTROL");
+                _mapping.AddItem("SupplierVat", "VVATSUPPLIER");
+                _mapping.AddItem("DealerVat", "VVATDEALER");
+                _mapping.AddItem("InnerCode", "VINNERCODE");
+                _mapping.AddItem("Quantity", "IDISPATCHED");
+
+                Util.Data _data = Util.Data.GetInstance();
+                DataTable _table = await _data.GetDataTable("USP_GET_DISPATCHSTOINVOINCING_FIGO", null);
+                _response.Data = _data.GetList<Models.DispatchsToInvoincing>(_mapping, _table);
+                _response.SetGetResponse(_table);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(ex);
+            }
+            return _response;
+        }
+        #endregion
+
+        #region DESPACHOS FACTURADOS
+        public async Task<Response<Models.Result>> PostInvoicedDispatches(List<Models.InvoicedDispatches> _list)
+        {
+            await _semaphore.WaitAsync(Util.Setting.TimeOut);
+            try
+            {
+                return await _PostInvoicedDispatches(_list);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+        private async Task<Response<Models.Result>> _PostInvoicedDispatches(List<Models.InvoicedDispatches> _list)
+        {
+            Response<Models.Result> _response = new Response<Models.Result>();
+            try
+            {
+                string _jsonstring = Util.Json.ConvertToJsonString(_list);
+                Parameter _parameter = new Parameter();
+                _parameter.AddSqlParameter("@DATA", _jsonstring);
+                Mapping _mapping = new Mapping();
+                _mapping.SetDefaultPostMapping();
+                Util.Data _data = Util.Data.GetInstance();
+                DataTable _table = await _data.GetDataTable("USP_POST_INVOICEDDISPATCHES_FIGO", _parameter);
+                _response.Data = _data.GetItem<Models.Result>(_mapping, _table);
+                _response.SetPostResponse();
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(ex);
+            }
+            return _response;
+        }
+        #endregion
+
+        #region PLACAS POR ASIGNAR
+        public async Task<Response<List<Models.PlatesToAssign>>> GetPlatesToAssign()
+        {
+            await _semaphore.WaitAsync(Util.Setting.TimeOut);
+            try
+            {
+                return await _GetPlatesToAssign();
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+        private async Task<Response<List<Models.PlatesToAssign>>> _GetPlatesToAssign()
+        {
+            Response<List<Models.PlatesToAssign>> _response = new Response<List<Models.PlatesToAssign>>();
+            try
+            {
+                Mapping _mapping = new Mapping();
+                _mapping.AddItem("Plate", "VPLATE");
+                _mapping.AddItem("SupplierVat", "VVATSUPPLIER");
+                _mapping.AddItem("Vin", "VVIN"); 
+
+                Util.Data _data = Util.Data.GetInstance();
+                DataTable _table = await _data.GetDataTable("USP_GET_PLATESTOASSIGN_FIGO", null);
+                _response.Data = _data.GetList<Models.PlatesToAssign>(_mapping, _table);
+                _response.SetGetResponse(_table);
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(ex);
+            }
+            return _response;
+        }
+        #endregion
     }
 }
