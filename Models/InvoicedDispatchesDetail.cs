@@ -9,7 +9,7 @@ namespace Models
 {
     public class InvoicedDispatchesDetail: Details
     {
-        [Required] public decimal? Price { get; set; }  
-        [Required] public decimal? Tax { get; set; }  
+        [Required(ErrorMessage = "Precio unitario de facturación es obligatorio")] public decimal? Price { get; set; }
+        [Required(ErrorMessage = "El % de impuesto aplicado es obligatorio")] public decimal? Tax { get; set; }  
     }
 }

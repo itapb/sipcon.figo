@@ -9,7 +9,7 @@ namespace Models
 {
     public class AdjustmentsDetailsToSync : Details
     {
-        [Required] public string? Type { get; set; } = string.Empty;
-        [Required] public string? Concept { get; set; } = string.Empty;
+        [SwaggerIgnore] public string? Type { get; set; } = string.Empty;
+        [SwaggerIgnore] public string? Concept { get; set; } = string.Empty;
     }
 }
