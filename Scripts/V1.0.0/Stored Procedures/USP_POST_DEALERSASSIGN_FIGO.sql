@@ -1,0 +1,142 @@
+USE [FIGO]
+GO
+/****** Object:  StoredProcedure [dbo].[USP_POST_VEHICLEDISPATCHES_FIGO]    Script Date: 26/03/2026 16:13:15 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ALTER PROCEDURE [dbo].[USP_POST_VEHICLEDISPATCHES_FIGO]  
+ @DATA VARCHAR(MAX)
+AS
+/* '===============================================================          
+  '   NOMBRE                : 
+  '   FECHA CREACIÓN        : 
+  '   CREADO POR            : JUAN GUARECUCO
+  '   CREADO PARA           : 
+  '   FUNCIÓN               :  
+  '   VERSIÓN               : 
+  '   MODIFICADO EN         : 
+  '   MODIFICADO POR        :  
+  '   RAZÓN DE MODIFICACIÓN : 
+  '===============================================================*/
+
+SET XACT_ABORT ON               
+SET NOCOUNT ON
+SET LOCK_TIMEOUT 180000
+
+BEGIN
+
+	BEGIN TRY
+	     
+		  DECLARE @IDUSER INT=1
+		  DECLARE @ErrorMessage NVARCHAR(4000)
+		  DECLARE @UpdatedIDs TABLE (IDVEHICLE INT, IDDEALER INT);
+		 DECLARE @IDMODULE INT=[dbo].[UFN_GET_IDMODULE]('VEHICULOS-VEHICULOS')
+	
+				DECLARE @TDATA AS TABLE
+				(
+					VVIN VARCHAR(20),
+					VSUPPLIERVAT VARCHAR(12),
+					VDEALERCODE VARCHAR(12),
+					DDATE  DATETIME,
+					IDSUPPLIER INT,
+					IDDEALER INT
+				);
+
+				INSERT INTO @TDATA (
+					VVIN, 
+					VSUPPLIERVAT,
+					VDEALERCODE,
+					DDATE
+				)
+				SELECT 
+				    H.Vin,
+					H.SupplierVat,
+					H.DealerCode,
+					H.Date
+				FROM OPENJSON(@DATA)
+				WITH (
+					Vin     VARCHAR(20),
+					SupplierVat VARCHAR(12),
+					DealerCode VARCHAR (12),
+					Date datetime
+				) AS H;
+
+			   	UPDATE A
+				SET A.IDSUPPLIER = V.IDSUPPLIER
+				FROM @TDATA A
+				INNER JOIN V_SUPPLIERS V ON UPPER(A.VSUPPLIERVAT) = UPPER(V.VVAT)
+
+				UPDATE A
+				SET A.IDDEALER = V.IDDEALER
+				FROM @TDATA A
+				INNER JOIN V_DEALERS V ON UPPER(A.VDEALERCODE) = UPPER(V.VREFERENCEDEALER)
+				WHERE A.IDSUPPLIER=V.IDSUPPLIER
+
+
+				IF EXISTS (SELECT * FROM @TDATA WHERE ISNULL(IDSUPPLIER,0)=0)
+				BEGIN
+				RAISERROR('PLANTA INCORRECTA', 16, 1)
+				END
+
+				IF EXISTS (SELECT * FROM @TDATA WHERE ISNULL(IDDEALER,0)=0)
+				BEGIN
+				RAISERROR('CONCESIONARIO INCORRECTO', 16, 1)
+				END
+
+
+	            BEGIN TRAN 
+
+				DECLARE @IID INT
+				DECLARE @IINSERTED INT
+				DECLARE @IUPDATED INT
+
+				UPDATE V
+				SET
+					V.IDDEALER = D.IDDEALER,
+					V.IESTATUS = DBO.UFN_GET_ISTATUS('ASSIGN'),
+					V.DUPDATED = GETDATE(),
+					V.VUPDATEDBY = DBO.UFN_GET_LOGIN(@IDUSER)
+				OUTPUT 
+					inserted.ID, -- El ID de la tabla VEHICLE
+					inserted.IDDEALER   -- El nuevo IDDEALER asignado
+				INTO @UpdatedIDs (IDVEHICLE, IDDEALER)
+				FROM VEHICLE V
+				INNER JOIN @TDATA D ON V.VVIN = D.VVIN  
+				WHERE V.IDSUPPLIER = D.IDSUPPLIER 
+				  AND V.IESTATUS NOT IN (DBO.UFN_GET_ISTATUS('CREATE'), DBO.UFN_GET_ISTATUS('BINVOICED'));
+
+				-- Capturamos la cantidad de filas afectadas
+				SELECT @IUPDATED = @@ROWCOUNT;
+				
+				 IF @IUPDATED > 0
+				BEGIN
+					INSERT INTO AUDIT (IDUSER, IDRECORD, IDMODULE, VCOMMENT, DCREATED, VACTION, IDRELATED)
+					SELECT  
+						@IDUSER,
+						IDVEHICLE,
+						@IDMODULE,
+						'Asignación Figo de Vehiculo a Concesionario', -- Comentario opcional
+						GETDATE(),
+						'ASSIGN',
+						IDDEALER
+					FROM @UpdatedIDs;
+				END
+
+
+				SELECT
+				ISNULL(@IID,0) AS IID , 
+				ISNULL(@IINSERTED,0) AS IINSERTED,
+				ISNULL(@IUPDATED,0) AS IUPDATED
+
+ 		COMMIT TRAN
+	END TRY
+	BEGIN CATCH
+		IF XACT_STATE() <> 0
+			ROLLBACK TRAN
+		 
+		SELECT  @ErrorMessage = ERROR_PROCEDURE() + ' : ' + ERROR_MESSAGE()
+		RAISERROR ( @ErrorMessage , 16,1) 
+	END CATCH
+
+END

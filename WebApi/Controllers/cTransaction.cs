@@ -147,6 +147,75 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status409Conflict, ex.Message);
             }
         }
+
+        [HttpPost("PostPlatesAssigned")]
+        public async Task<IActionResult> PostPlatesAssigned([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.PlatesAssign> _list)
+        {
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                response = await _dTransaction.PostPlatesAssigned(_list);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+
+
+        #endregion
+
+
+
+        #region  RECEPCION DE VEHICULOS
+        [HttpPost("PostVehicles")]
+        public async Task<IActionResult> PostVehicles([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.Vehicle> _list)
+        {
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                response = await _dTransaction.PostVehicles(_list);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+        #endregion
+
+
+        #region  DESPACHO DE VEHICULOS
+        [HttpPost("PostVehicleDispatches")]
+        public async Task<IActionResult> PostVehicleDispatches([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.VehicleDispatch> _list)
+        {
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                response = await _dTransaction.PostVehicleDispatches(_list);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
         #endregion
     }
 }
