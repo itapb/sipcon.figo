@@ -28,7 +28,28 @@ namespace WebApi.Controllers
           
         }
 
+        [HttpPost("PostParts")]
+        public async Task<IActionResult> PostParts([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.Part> _parts)
+        {
 
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+
+                response = await _dMaster.PostParts(_parts);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+
+        }
 
         [HttpPost("PostContacts")]
         public async Task<IActionResult> PostContacts([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.Contact> _contacts)
