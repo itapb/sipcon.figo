@@ -217,5 +217,78 @@ namespace WebApi.Controllers
             }
         }
         #endregion
+
+        #region AJUSTES POR SINCROIZAR
+        [HttpGet("GetAdjustmentsToSync")]
+        public async Task<IActionResult> GetAdjustmentsToSync(
+        [FromHeader(Name = "X-API-KEY")] string apiKey)
+        {
+            try
+            {
+                var response = new Models.Response<List<Models.AdjustmentsToSync>>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+
+                // Obtener lista plana
+                var flat = await _dTransaction.GetAdjustmentsToSync();
+
+                var grouped = flat.Data
+                    .GroupBy(x => new { x.AdjustmentNumber, x.AdjustmentDate, x.SupplierVat, x.Observation })
+                    .Select(g => new Models.AdjustmentsToSyncWithContext
+                    {
+                        AdjustmentNumber = g.Key.AdjustmentNumber,
+                        AdjustmentDate = g.Key.AdjustmentDate,
+                        SupplierVat = g.Key.SupplierVat,
+                        Observation = g.Key.Observation,
+                        Detail = g.Select(d => new Models.AdjustmentsDetailsToSync
+                        {
+                            InnerCode = d.InnerCode,
+                            Quantity = d.Quantity,
+                            Type = d.Type,
+                            Concept = d.Concept
+                        }).ToList()
+                    }).ToList();
+
+                var result = new Models.Response<List<Models.AdjustmentsToSyncWithContext>>();
+                result.Data = grouped;
+                result.Total = flat.Total;
+                result.Processed = flat.Processed;
+                result.Message = flat.Message;
+
+                return StatusCode(result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+        #endregion
+
+        #region AJUSTES SINCRONIZADOS
+        [HttpPost("PostSyncAdjustment")]
+        public async Task<IActionResult> PostSyncAdjustment(
+        [FromHeader(Name = "X-API-KEY")] string apiKey,
+        List<Models.SyncAdjustment> syncAdjustment)
+        {
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                response = await _dTransaction.PostSyncAdjustment(syncAdjustment);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+        #endregion
     }
 }
