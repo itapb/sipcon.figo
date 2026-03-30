@@ -8,6 +8,6 @@ namespace Models
 {
     public class SyncAdjustment
     {
-        [Required] public int? AdjustmentNumber { get; set; }
+        [Required(ErrorMessage = "Número del ajuste sincronizado es obligatorio")] public int? AdjustmentNumber { get; set; }
     }
 }
