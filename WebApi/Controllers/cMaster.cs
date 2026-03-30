@@ -50,7 +50,7 @@ namespace WebApi.Controllers
             }
 
         }
-
+        #region CONTACTOS
         [HttpPost("PostContacts")]
         public async Task<IActionResult> PostContacts([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.Contact> _contacts)
         {
@@ -90,8 +90,9 @@ namespace WebApi.Controllers
             }
 
         }
+         #endregion
 
-
+        #region MODELOS
         [HttpPost("PostModels")]
         public async Task<IActionResult> Post_Models([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.Model> models)
         {
@@ -112,6 +113,7 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status409Conflict, ex.Message);
             }
         }
+        #endregion
 
         #region LISTA PRECIOS
         [HttpPost("PostPriceList")]
