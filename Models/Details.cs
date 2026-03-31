@@ -8,7 +8,7 @@ namespace Models
 {
     public class Details
     {
-        public string? InnerCode { get; set; } = string.Empty;
-        public int? Quantity { get; set; }
+        [Required(ErrorMessage = "Código de respuesto es obligatorio")][MaxLength(25, ErrorMessage = "Máximo 25 caracteres")] public string? InnerCode { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Cantidad de repuesto es obligatoria")] public int? Quantity { get; set; }
     }
 }
