@@ -32,7 +32,7 @@ namespace Models
         
         public DateTime? Birthday { get; set; } = DateTime.Now;
 
-        [MaxLength(10, ErrorMessage = "Máximo 10 caracteres")] public string? Male { get; set; }
+         public bool? Male { get; set; }
 
         [MaxLength(10, ErrorMessage = "Máximo 10 caracteres")] public string? Reference { get; set; } = string.Empty;
 

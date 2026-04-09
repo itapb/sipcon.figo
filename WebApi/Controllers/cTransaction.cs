@@ -122,7 +122,7 @@ namespace WebApi.Controllers
         #region PLACAS POR ASIGNAR
         [HttpGet("GetPlatesToAssign")]
         public async Task<IActionResult> GetPlatesToAssign(
-        [FromHeader(Name = "X-API-KEY")] string apiKey)
+        [FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace WebApi.Controllers
                     return StatusCode(StatusCodes.Status401Unauthorized, response);
                 }
 
-                var flat = await _dTransaction.GetPlatesToAssign();
+                var flat = await _dTransaction.GetPlatesToAssign(supplierVat);
                 var result = new Models.Response<List<Models.PlatesToAssign>>();
                 result.Total = flat.Total;
                 result.Processed = flat.Processed;

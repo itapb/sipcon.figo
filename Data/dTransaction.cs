@@ -128,12 +128,12 @@ namespace Data
         #endregion
 
         #region PLACAS POR ASIGNAR
-        public async Task<Response<List<Models.PlatesToAssign>>> GetPlatesToAssign()
+        public async Task<Response<List<Models.PlatesToAssign>>> GetPlatesToAssign(string supplierVat )
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
             {
-                return await _GetPlatesToAssign();
+                return await _GetPlatesToAssign(supplierVat);
             }
             finally
             {
@@ -141,18 +141,21 @@ namespace Data
             }
         }
 
-        private async Task<Response<List<Models.PlatesToAssign>>> _GetPlatesToAssign()
+        private async Task<Response<List<Models.PlatesToAssign>>> _GetPlatesToAssign(string supplierVat)
         {
             Response<List<Models.PlatesToAssign>> _response = new Response<List<Models.PlatesToAssign>>();
             try
             {
+                Parameter _parameter = new Parameter();
+
+                _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
                 Mapping _mapping = new Mapping();
                 _mapping.AddItem("Plate", "VPLATE");
                 _mapping.AddItem("SupplierVat", "VVATSUPPLIER");
                 _mapping.AddItem("Vin", "VVIN"); 
 
                 Util.Data _data = Util.Data.GetInstance();
-                DataTable _table = await _data.GetDataTable("USP_GET_PLATESTOASSIGN_FIGO", null);
+                DataTable _table = await _data.GetDataTable("USP_GET_PLATESTOASSIGN_FIGO", _parameter);
                 _response.Data = _data.GetList<Models.PlatesToAssign>(_mapping, _table);
                 _response.SetGetResponse(_table);
             }
