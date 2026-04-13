@@ -122,7 +122,7 @@ namespace WebApi.Controllers
         #region PLACAS POR ASIGNAR
         [HttpGet("GetPlatesToAssign")]
         public async Task<IActionResult> GetPlatesToAssign(
-        [FromHeader(Name = "X-API-KEY")] string apiKey)
+        [FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
         {
             try
             {
@@ -133,7 +133,7 @@ namespace WebApi.Controllers
                     return StatusCode(StatusCodes.Status401Unauthorized, response);
                 }
 
-                var flat = await _dTransaction.GetPlatesToAssign();
+                var flat = await _dTransaction.GetPlatesToAssign(supplierVat);
                 var result = new Models.Response<List<Models.PlatesToAssign>>();
                 result.Total = flat.Total;
                 result.Processed = flat.Processed;
@@ -282,6 +282,28 @@ namespace WebApi.Controllers
                     return StatusCode(StatusCodes.Status401Unauthorized, response);
                 }
                 response = await _dTransaction.PostSyncAdjustment(syncAdjustment);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+        #endregion
+
+        #region PORTAL DE PAGOS 
+        [HttpPost("PostAccountReceivable")]
+        public async Task<IActionResult> PostAccountReceivable( [FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.AccountReceivable> syncAdjustment)
+        {
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                response = await _dTransaction.PostAccountReceivable(syncAdjustment);
                 return StatusCode(response.Status, response);
             }
             catch (Exception ex)
