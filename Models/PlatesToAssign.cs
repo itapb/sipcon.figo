@@ -10,7 +10,8 @@ namespace Models
     {
         [SwaggerIgnore] public string? Plate { get; set; } = string.Empty; 
         [SwaggerIgnore] public string? Vin { get; set; } = string.Empty;
-        [SwaggerIgnore] public string? SupplierVat { get; set; } = string.Empty;  
+        [SwaggerIgnore] public string? SupplierVat { get; set; } = string.Empty;
+        [SwaggerIgnore] public string? Condition { get; set; } = string.Empty;
     }
 
 

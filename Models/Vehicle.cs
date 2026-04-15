@@ -19,6 +19,10 @@ namespace Models
         [Required(ErrorMessage = "El ReceptionDate es obligatorio")] 
         public DateTime? ReceptionDate { get; set; } = DateTime.Now;
 
+        public string? Batch { get; set; }
+
+        [Required(ErrorMessage = "El ReceptionDate es obligatorio")]
+        public DateTime? BatchDate { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "El SupplierVat es obligatorio")]
         [MinLength(5, ErrorMessage = "Mínimo 5 caracteres")]
@@ -78,6 +82,30 @@ namespace Models
         public DateTime? Date { get; set; } = DateTime.Now;
 
 
+    }
+
+
+
+    public class VehicleStatus
+    {
+        [Required(ErrorMessage = "El Vin es obligatorio")]
+        [MinLength(5, ErrorMessage = "Mínimo 5 caracteres")]
+        [MaxLength(20, ErrorMessage = "Máximo 20 caracteres")]
+        public string? Vin { get; set; }
+
+        [Required(ErrorMessage = "El ReceptionNumber es obligatorio")]
+        [MinLength(5, ErrorMessage = "Mínimo 5 caracteres")]
+        [MaxLength(10, ErrorMessage = "Máximo 10 caracteres")]
+        public string? ReceptionNumber { get; set; }
+
+        [Required(ErrorMessage = "El ReceptionDate es obligatorio")]
+        public DateTime? ReceptionDate { get; set; } = DateTime.Now;
+
+
+        [Required(ErrorMessage = "El Vin es obligatorio")]
+        [MinLength(5, ErrorMessage = "Mínimo 5 caracteres")]
+        [MaxLength(15, ErrorMessage = "Máximo 15 caracteres")]
+        public string? Estatus { get; set; }
     }
 
 }

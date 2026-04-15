@@ -193,6 +193,27 @@ namespace WebApi.Controllers
                 return StatusCode(StatusCodes.Status409Conflict, ex.Message);
             }
         }
+
+        [HttpPost("PostStatusVehicle")]
+        public async Task<IActionResult> PostStatusVehicle([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.VehicleStatus> _list)
+        {
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                response = await _dTransaction.PostStatusVehicle(_list);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+
         #endregion
 
 
