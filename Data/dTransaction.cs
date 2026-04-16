@@ -11,7 +11,7 @@ namespace Data
         public dTransaction()
         {
             Util.Setting.GetSettings(true);
-            _semaphore = new SemaphoreSlim(100, 150);
+            _semaphore = new SemaphoreSlim(300, 500);
         }
 
         #region RECEPCION DE REPUESTOS
@@ -207,46 +207,7 @@ namespace Data
 
         #endregion
 
-
         #region RECEPCION DE VEHICULOS
-        public async Task<Response<Models.Result>> PostVehicles(List<Models.Vehicle> _list)
-        {
-            await _semaphore.WaitAsync(Util.Setting.TimeOut);
-            try
-            {
-                return await _PostVehicles(_list);
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-        }
-
-        private async Task<Response<Models.Result>> _PostVehicles(List<Models.Vehicle> _list)
-        {
-            Response<Models.Result> _response = new Response<Models.Result>();
-            try
-            {
-                string _jsonstring = Util.Json.ConvertToJsonString(_list);
-                Parameter _parameter = new Parameter();
-
-                _parameter.AddSqlParameter("@DATA", _jsonstring);
-
-                Mapping _mapping = new Mapping();
-                _mapping.SetDefaultPostMapping();
-                
-                Util.Data _data = Util.Data.GetInstance();
-                DataTable _table = await _data.GetDataTable("USP_POST_VEHICLES_FIGO", _parameter);
-                _response.Data = _data.GetItem<Models.Result>(_mapping, _table);
-                _response.SetPostResponse();
-            }
-            catch (Exception ex)
-            {
-                _response.SetError(ex);
-            }
-            return _response;
-        }
-
 
         public async Task<Response<Models.Result>> PostStatusVehicle(List<Models.VehicleStatus> _list)
         {

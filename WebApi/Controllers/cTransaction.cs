@@ -174,25 +174,7 @@ namespace WebApi.Controllers
 
 
         #region  RECEPCION DE VEHICULOS
-        [HttpPost("PostVehicles")]
-        public async Task<IActionResult> PostVehicles([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.Vehicle> _list)
-        {
-            try
-            {
-                var response = new Models.Response<Models.Result>();
-                if (apiKey != Util.Setting.ApiKey)
-                {
-                    response.SetError(new Exception("API KEY INVALIDA"));
-                    return StatusCode(StatusCodes.Status401Unauthorized, response);
-                }
-                response = await _dTransaction.PostVehicles(_list);
-                return StatusCode(response.Status, response);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
-            }
-        }
+
 
         [HttpPost("PostStatusVehicle")]
         public async Task<IActionResult> PostStatusVehicle([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.VehicleStatus> _list)
