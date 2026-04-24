@@ -29,7 +29,7 @@ namespace Models
         [MaxLength(12, ErrorMessage = "Máximo 12 caracteres")]
         public string? SupplierVat { get; set; }
 
-        [Required] public List<VehicleDetail> VehicleDetail { get; set; } = new();
+        [Required] public List<VehicleDetail> Detail { get; set; } = new();
 
     }
 
