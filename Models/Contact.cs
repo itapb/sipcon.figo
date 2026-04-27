@@ -11,8 +11,6 @@ namespace Models
 
         [Required(ErrorMessage = "El FirstName es obligatorio")][MinLength(1, ErrorMessage = "Mínimo 1 caracteres")][MaxLength(100, ErrorMessage = "Máximo 100 caracteres")] 
         public string? FirstName { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "El LastName es obligatorio")][MinLength(1, ErrorMessage = "Mínimo 1 caracteres")][MaxLength(100, ErrorMessage = "Máximo 100 caracteres")] 
          public string? LastName { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El Address es obligatorio")][MinLength(5, ErrorMessage = "Mínimo 1 caracteres")][MaxLength(250, ErrorMessage = "Máximo 250 caracteres")] 
