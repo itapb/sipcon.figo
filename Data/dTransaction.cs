@@ -439,6 +439,156 @@ namespace Data
             return _response;
         }
 
+        public async Task<Response<List<Models.PaymentDetails>>> GetPayments_Consolidated(String supplierVat)
+        {
+            await _semaphore.WaitAsync(Util.Setting.TimeOut);
+            try
+            {
+                return await _GetPayments_Consolidated(supplierVat);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+
+        private async Task<Response<List<Models.PaymentDetails>>> _GetPayments_Consolidated(String supplierVat)
+        {
+            Response<List<Models.PaymentDetails>> _response = new Response<List<Models.PaymentDetails>>();
+
+            try
+            {
+                Util.Parameter _parameter = new Util.Parameter();
+                _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
+            
+
+                Mapping _mapping = new Mapping();
+                _mapping.AddItem("Id", "ID");
+                _mapping.AddItem("Date", "DDATE");
+                _mapping.AddItem("Amount", "NAMOUNT");
+                _mapping.AddItem("Rate", "NRATE");
+                _mapping.AddItem("DateRate", "DDATERATE");
+                _mapping.AddItem("CurrencyName", "VCURRENCY");
+                _mapping.AddItem("TypeName", "VTYPE");
+                _mapping.AddItem("Reference", "VREFERENCE");
+                _mapping.AddItem("BankName", "VBANK");
+                _mapping.AddItem("AccountNumber", "VACCOUNTNUMBER");
+                _mapping.AddItem("DealerName", "VDEALER");
+                _mapping.AddItem("StatusName", "VESTATUS");
+                _mapping.AddItem("BankOriginName", "VBANKORIGIN");
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
+                _mapping.AddItem("DealerVat", "VDEALERVAT");
+
+                Util.Data _data = Util.Data.GetInstance();
+                DataTable _table = await _data.GetDataTable("USP_GET_PAYMENTDETAILS_CONSOLIDATED", _parameter);
+                _response.Data = _data.GetList<Models.PaymentDetails>(_mapping, _table);
+                _response.SetGetResponse(_table);
+
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(ex);
+            }
+            return _response;
+        }
+
+
+        public async Task<Response<List<Models.GetAccountReceivable>>> GetAccount_Consolidated(String supplierVat)
+        {
+            await _semaphore.WaitAsync(Util.Setting.TimeOut);
+            try
+            {
+                return await _GetAccount_Consolidated(supplierVat);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+
+        private async Task<Response<List<Models.GetAccountReceivable>>> _GetAccount_Consolidated(String supplierVat)
+        {
+            Response<List<Models.GetAccountReceivable>> _response = new Response<List<Models.GetAccountReceivable>>();
+
+            try
+            {
+
+                Util.Parameter _parameter = new Util.Parameter();
+                _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
+          
+
+                Mapping _mapping = new Mapping();
+                _mapping.AddItem("Id", "ID");
+                _mapping.AddItem("DealerName", "VDEALER");
+                _mapping.AddItem("DealerVat", "VDEALERVAT");
+                _mapping.AddItem("Type", "VTYPECODE");
+                _mapping.AddItem("Concept", "VCONCEPTCODE");
+                _mapping.AddItem("Number", "VNUMBER");
+                _mapping.AddItem("Reference", "VREFERENCE");
+                _mapping.AddItem("Date", "DDATE");
+                _mapping.AddItem("DueDate", "DDUEDATE");
+                _mapping.AddItem("Amount", "NAMOUNT");
+                _mapping.AddItem("Balance", "NBALANCE");
+                
+
+                Util.Data _data = Util.Data.GetInstance();
+                DataTable _table = await _data.GetDataTable("USP_GET_ACCOUNTRECEIVABLE_CONSOLIDATED", _parameter);
+                _response.Data = _data.GetList<Models.GetAccountReceivable>(_mapping, _table);
+                _response.SetGetResponse(_table);
+
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(ex);
+            }
+            return _response;
+        }
+
+
+        public async Task<Response<List<Models.Settlements>>> GetSettlements(String supplierVat)
+        {
+            await _semaphore.WaitAsync(Util.Setting.TimeOut);
+            try
+            {
+                return await _GetSettlements(supplierVat);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+
+        private async Task<Response<List<Models.Settlements>>> _GetSettlements(String supplierVat)
+        {
+            Response<List<Models.Settlements>> _response = new Response<List<Models.Settlements>>();
+
+            try
+            {
+                Util.Parameter _parameter = new Util.Parameter();
+                _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
+
+
+                Mapping _mapping = new Mapping();
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
+                _mapping.AddItem("AccountReceivableId", "IDACCOUNTRECEIVABLE");
+                
+
+                Util.Data _data = Util.Data.GetInstance();
+                DataTable _table = await _data.GetDataTable("USP_GET_SETTLEMENTS", _parameter);
+                _response.Data = _data.GetList<Models.Settlements>(_mapping, _table);
+                _response.SetGetResponse(_table);
+
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(ex);
+            }
+            return _response;
+        }
+
         #endregion
 
     }

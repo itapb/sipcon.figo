@@ -37,4 +37,20 @@ namespace Models
         [Required(ErrorMessage = "Amount es obligatorio")] public decimal Amount { get; set; }
         [Required(ErrorMessage = "Rate es obligatorio")] public decimal Rate { get; set; }
     }
+
+
+    public class GetAccountReceivable 
+    {
+        public int Id { get; set; }
+        public string? DealerName { get; set; } = string.Empty;
+        public string? DealerVat { get; set; } = string.Empty;
+        public string? Concept { get; set; } = string.Empty;
+        public string? Type { get; set; } = string.Empty;
+        public string? Number { get; set; } = string.Empty;
+        public string? Reference { get; set; } = string.Empty;
+        public DateTime? Date { get; set; }
+        public DateTime? DueDate { get; set; }
+        public decimal Balance { get; set; } = 0;
+        public decimal Amount { get; set; }
+    }
 }

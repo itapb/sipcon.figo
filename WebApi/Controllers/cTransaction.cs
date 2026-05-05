@@ -335,6 +335,81 @@ namespace WebApi.Controllers
             }
         }
 
+        [HttpGet("GetPayments_Consolidated")]
+        public async Task<IActionResult> GetPayments_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey,String supplierVat)
+        {
+            try
+            {
+
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+
+                // 1. Obtener las 3 fuentes de datos
+                var paymentsTask = _dTransaction.GetPayments_Consolidated(supplierVat);
+                var accountsTask = _dTransaction.GetAccount_Consolidated(supplierVat);
+                var settlementsTask = _dTransaction.GetSettlements(supplierVat);
+
+                await Task.WhenAll(paymentsTask, accountsTask, settlementsTask);
+
+                var paymentsResponse = paymentsTask.Result;
+                var accountsResponse = accountsTask.Result;
+                var settlementsResponse = settlementsTask.Result;
+
+                if (paymentsResponse.Data == null)
+                    return Ok(new Models.Response<List<PaymentFull>> { Data = new List<PaymentFull>(), Message = "No hay datos", Status = 200 });
+
+                // 2. Crear Lookups para acceso rápido O(1)
+                var detailsLookup = paymentsResponse.Data.ToLookup(p => p.PaymentId);
+
+                // Lookup de liquidaciones (Settlements) agrupado por PaymentId
+                var settlementsLookup = settlementsResponse.Data?.ToLookup(s => s.PaymentId);
+
+                // Diccionario de cuentas para búsqueda rápida por ID de cuenta
+                var accountsDict = accountsResponse.Data?.ToDictionary(a => a.Id, a => a);
+
+                // 3. Construir la respuesta consolidada
+                var paymentsFullList = detailsLookup.Select(group =>
+                {
+                    int paymentId = group.Key ?? 0;
+
+                    // Buscamos qué IDs de cuentas pertenecen a este pago mediante el settlement
+                    var relatedAccountIds = settlementsLookup[paymentId]
+                                            .Select(s => s.AccountReceivableId)
+                                            .ToList();
+
+                    // Filtramos las cuentas que coincidan con esos IDs
+                    var relatedAccounts = relatedAccountIds
+                                          .Where(id => id.HasValue && accountsDict.ContainsKey(id.Value))
+                                          .Select(id => accountsDict[id.Value])
+                                          .ToList();
+
+                    return new PaymentFull
+                    {
+                        // Lista de detalles (todos los que comparten el mismo PaymentId)
+                        PaymentDetails = group.ToList(),
+
+                        // Lista de cuentas (las que cruzaron en la tabla de muchos a muchos)
+                        AccountReceivable = relatedAccounts
+                    };
+                }).ToList();
+
+                return Ok(new Models.Response<List<PaymentFull>>
+                {
+                    Data = paymentsFullList,
+                    Status = 200,
+                    Total = paymentsFullList.Count
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+
         #endregion
     }
 }
