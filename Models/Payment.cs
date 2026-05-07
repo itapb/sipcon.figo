@@ -45,5 +45,23 @@ namespace Models
 
     }
 
+    public class Retention
+    {
+        public int? Id { get; set; }
+        public int? PaymentId { get; set; }
+        [Required] public DateTime? Date { get; set; }
+        [Required] public string? Reference { get; set; }
+        [SwaggerIgnore] public string? DealerName { get; set; }
+        [SwaggerIgnore] public string? DealerVat { get; set; }
+        [SwaggerIgnore] public string? StatusName { get; set; }
+
+    }
+    public class RetentionFull
+    {
+        public List<Retention>? Retentions { get; set; } = new List<Retention>();
+        public List<GetAccountReceivable>? AccountReceivable { get; set; } = new List<GetAccountReceivable>();
+
+    }
+
 
 }
