@@ -63,5 +63,12 @@ namespace Models
 
     }
 
+    public class AsincPayment
+    {
+        [Required] public int? PaymentId { get; set; }
+        [Required] public string? SupplierVat { get; set; }
+
+    }
+
 
 }
