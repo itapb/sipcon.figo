@@ -760,7 +760,7 @@ namespace Data
 
 
                 Util.Data _data = Util.Data.GetInstance();
-                DataTable _table = await _data.GetDataTable("USP_POST_RATES", _parameter);
+                DataTable _table = await _data.GetDataTable("USP_POST_ALTERRATES", _parameter);
                 _response.Data = _data.GetItem<Models.Result>(_mapping, _table);
                 _response.SetPostResponse();
 
