@@ -8,9 +8,8 @@ namespace Models
 {
     public class Rate
     {
-        public DateTime DDate { get; set; }
-
-        public decimal NAlterRate { get; set; }
+        [Required] public DateTime RateDate { get; set; }
+        [Required] public decimal RateValue { get; set; }
 
     }
 }
