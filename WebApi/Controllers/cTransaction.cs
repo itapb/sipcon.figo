@@ -530,29 +530,6 @@ namespace WebApi.Controllers
             }
         }
 
-
-        [HttpPost("PostRate")]
-        public async Task<IActionResult> PostRate([FromHeader(Name = "X-API-KEY")] string apiKey, Models.Rate rate)
-        {
-
-            try
-            {
-                var _response = new Models.Response<Models.Result>();
-                if (apiKey != Util.Setting.ApiKey)
-                {
-                    _response.SetError(new Exception("API KEY INVALIDA"));
-                    return StatusCode(StatusCodes.Status401Unauthorized, _response);
-                }
-
-                 _response = await _dTransaction.PostRate(rate);
-                return StatusCode(_response.Status, _response);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
-            }
-        }
-
         #endregion
 
 
