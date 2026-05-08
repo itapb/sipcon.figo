@@ -10,7 +10,8 @@ namespace Models
         [Required] public string? InnerCode { get; set; } = string.Empty;
         [Required] public string? MasterCode { get; set; } = string.Empty;
 
-        [Required] public string? AlterCode { get; set; } = string.Empty;
+        public string? AlterCode { get; set; } = string.Empty;
+        public string? BarCode { get; set; } = string.Empty;
         [Required] public string? Description { get; set; } = string.Empty;
 
         [Required] public string? AlterDescription { get; set; } = string.Empty;
@@ -23,6 +24,7 @@ namespace Models
 
         [Required] public string? SupplierVat { get; set; } = string.Empty;
         [Required] public decimal? Tax { get; set; } = 0;
+        public bool Active { get; set; } = true;
 
     }
 }
