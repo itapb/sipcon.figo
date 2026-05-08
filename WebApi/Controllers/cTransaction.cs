@@ -337,7 +337,7 @@ namespace WebApi.Controllers
         }
 
         [HttpGet("GetPayments_Consolidated")]
-        public async Task<IActionResult> GetPayments_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey,String supplierVat)
+        public async Task<IActionResult> GetPayments_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey,string supplierVat)
         {
             try
             {
@@ -413,7 +413,7 @@ namespace WebApi.Controllers
 
 
         [HttpGet("GetRetention_Consolidated")]
-        public async Task<IActionResult> GetRetention_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey, String supplierVat)
+        public async Task<IActionResult> GetRetention_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
         {
             try
             {
