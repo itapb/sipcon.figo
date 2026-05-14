@@ -419,7 +419,8 @@ namespace WebApi.Controllers
 
         [EndpointDescription("Obtener relacion de retenciones aprobados")]
         [HttpGet("GetRetention_Consolidated")]
-        public async Task<IActionResult> GetRetention_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
+        [ProducesResponseType(typeof(Models.Response<List<RetentionFull>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<Models.Response<List<RetentionFull>>>> GetRetention_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
         {
             try
             {
