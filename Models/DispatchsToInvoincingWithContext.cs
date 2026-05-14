@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Models
 {
+    /// <summary>
+    /// Representa la información de los despachos de repuestos por facturar
+    /// </summary>
     public class DispatchsToInvoincingWithContext
     { 
         [SwaggerIgnore] public string? SupplierVat { get; set; } = string.Empty;

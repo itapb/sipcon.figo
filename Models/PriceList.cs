@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Models
 {
+    /// <summary>
+    /// Representa la información de la lista de precios de repuestos
+    /// </summary>
     public class PriceList  
     {
         [Required] public string? SupplierVat { get; set; } = string.Empty;

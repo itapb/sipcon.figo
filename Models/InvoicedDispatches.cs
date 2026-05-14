@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Models
 {
+    /// <summary>
+    /// Representa la información de las facturas de repuestos
+    /// </summary>
     public class InvoicedDispatches
     {
         [Required(ErrorMessage = "Codigo de referencia del despacho es obligatorio")][MaxLength(10, ErrorMessage = "Máximo 10 caracteres")] public string? Reference { get; set; } = string.Empty; 

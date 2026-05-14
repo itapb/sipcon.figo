@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Models
 {
+    /// <summary>
+    /// Representa la información de los ajustes de inventarios
+    /// </summary>
     public class AdjustmentsToSyncWithContext
     {
         [SwaggerIgnore] public int? AdjustmentNumber { get; set; }

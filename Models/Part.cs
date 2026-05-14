@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Models
 {
+    /// <summary>
+    /// Representa la información de un repuesto
+    /// </summary>
     public class Part
     {
         [Required] public string? InnerCode { get; set; } = string.Empty;
