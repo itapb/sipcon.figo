@@ -56,6 +56,8 @@ namespace Models
 
         /// <summary>Tasa dolar del documento o factura, del dia de la emision</summary>
         [Required(ErrorMessage = "Rate es obligatorio")] public decimal Rate { get; set; }
+        /// <summary>Monto total de saldo, del documento o factura</summary>
+        public decimal AmountFull { get; set; }
     }
 
 
