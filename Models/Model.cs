@@ -8,6 +8,9 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace Models
 {
+    /// <summary>
+    /// Representa la información de los modelos de vehiculos
+    /// </summary>
     public class Model  
 
     {

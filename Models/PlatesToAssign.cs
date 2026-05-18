@@ -6,6 +6,9 @@ using System.Text;
 
 namespace Models
 {
+    /// <summary>
+    /// Representa la información de las placas por asignar a un vehiculo
+    /// </summary>
     public class PlatesToAssign
     {
         [SwaggerIgnore] public string? Plate { get; set; } = string.Empty; 

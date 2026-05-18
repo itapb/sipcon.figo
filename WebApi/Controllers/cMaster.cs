@@ -164,6 +164,8 @@ namespace WebApi.Controllers
         #endregion
 
         #region TASA
+
+        [EndpointDescription("Registrar tasa dolar interna acordada para relaciones de pagos en BS")]
         [HttpPost("PostAlterRate")]
         public async Task<IActionResult> PostAlterRate(
          [FromHeader(Name = "X-API-KEY")] string apiKey,

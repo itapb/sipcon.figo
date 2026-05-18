@@ -1,19 +1,9 @@
 using Data; // Tu namespace para servicios personalizados
-using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.EMMA;
-using DocumentFormat.OpenXml.Spreadsheet;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using Models;
 using Scalar.AspNetCore;
-using System.ComponentModel;
 using System.Globalization;
-using System.Net.Mail;
 using System.Reflection;
-using System.Text;
-using WebApi;
+
 
 // 1. CreateBuilder
 var builder = WebApplication.CreateBuilder(args);
@@ -55,42 +45,26 @@ builder.Services.AddCors(options =>
 // 3. Configuración de servicios
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
 
-builder.Services.AddOpenApi("v1");
+//builder.Services.AddOpenApi("v1");
+builder.Services.AddOpenApi("v1", options =>
+{
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
-// Swagger con seguridad Bearer
-//builder.Services.AddSwaggerGen(c =>
-//{
-//    c.SwaggerDoc("v1", new OpenApiInfo { Title = "SIPCON", Version = "v1" });
-//    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-//    {
-//        Name = "Authorization",
-//        Type = SecuritySchemeType.Http,
-//        Scheme = "bearer",
-//        BearerFormat = "JWT",
-//        In = ParameterLocation.Header,
-//        Description = "Ejemplo: \"Bearer eyJhbGciOiJIUzI1NiIs...\""
-//    });
-//    //c.AddSecurityRequirement(new OpenApiSecurityRequirement
-//    //{
-//    //    {
-//    //        new OpenApiSecurityScheme
-//    //        {
-//    //            Reference = new OpenApiReference
-//    //            {
-//    //                Type = ReferenceType.SecurityScheme,
-//    //                Id = "Bearer"
-//    //            }
-//    //        },
-//    //        new string[] {}
-//    //    }
-//    //});
-//});
+    var modelsXml = "Models.xml";
+    var modelsPath = Path.Combine(AppContext.BaseDirectory, modelsXml);
 
+    if (File.Exists(xmlPath))
+    {
+        options.AddDocumentTransformer((document, context, cancellationToken) => Task.CompletedTask);
+    }
 
-//*****************************************
-
+    if (File.Exists(modelsPath))
+    {
+        options.AddDocumentTransformer((document, context, cancellationToken) => Task.CompletedTask);
+    }
+});
 
 // 4. Servicios personalizados
 
@@ -100,10 +74,6 @@ builder.Services.AddSingleton<RefreshTokenStore>();
 
 // 5. crear app
 var app = builder.Build();
-
-// 6. Use. ORDEN: UseSwagger,UseSwaggerUI,UseRouting,UseCors,Use,UseAuthentication,UseAuthorization,MapControllers
-//app.UseSwagger();
-//app.UseSwaggerUI();
 
 
 app.UseRouting();
@@ -124,12 +94,9 @@ app.MapOpenApi();
 app.MapScalarApiReference(options =>
 {
 
-    //options.OpenApiRoutePattern = "/MCAExpenseWebApi/openapi/v1.json";
     options.OpenApiRoutePattern = "/openapi/{documentName}.json";
     options.WithTitle("WebApi");
     options.WithTheme(ScalarTheme.BluePlanet);
-    //options.HideSidebar();
-    //options.Servers = [new ScalarServer("/MCAExpenseWebApi")];
 
 });
 //*****************

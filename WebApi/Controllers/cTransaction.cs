@@ -27,7 +27,9 @@ namespace WebApi.Controllers
         }
 
         #region RECEPCION DE REPUESTOS
+
         [HttpPost("PostReceptionParts")]
+        [EndpointDescription("Metodo para recepcionar mercancia con nuevas existencias")]
         public async Task<IActionResult> PostReceptionParts(
         [FromHeader(Name = "X-API-KEY")] string apiKey,
         List<Models.ReceptionParts> receptionParts)
@@ -296,6 +298,8 @@ namespace WebApi.Controllers
         #endregion
 
         #region PORTAL DE PAGOS 
+
+        [EndpointDescription("Registrar documentos con cambios de saldos recientes")]
         [HttpPost("PostAccountReceivable")]
         public async Task<IActionResult> PostAccountReceivable( [FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.AccountReceivable> syncAdjustment)
         {
@@ -316,6 +320,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [EndpointDescription("Registrar extracto bancario")]
         [HttpPost("PostBankStatement")]
         public async Task<IActionResult> PostBankStatement([FromHeader(Name = "X-API-KEY")] string apiKey, List<BankStatement> _list, string supplierVat)
         {
@@ -336,6 +341,7 @@ namespace WebApi.Controllers
             }
         }
 
+        [EndpointDescription("Obtener relacion de pagos aprobados")]
         [HttpGet("GetPayments_Consolidated")]
         public async Task<IActionResult> GetPayments_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey,string supplierVat)
         {
@@ -411,9 +417,10 @@ namespace WebApi.Controllers
             }
         }
 
-
+        [EndpointDescription("Obtener relacion de retenciones aprobados")]
         [HttpGet("GetRetention_Consolidated")]
-        public async Task<IActionResult> GetRetention_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
+        [ProducesResponseType(typeof(Models.Response<List<RetentionFull>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<Models.Response<List<RetentionFull>>>> GetRetention_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
         {
             try
             {
@@ -487,7 +494,7 @@ namespace WebApi.Controllers
             }
         }
 
-
+        [EndpointDescription("Confirmacion de relacion de pagos recibidos")]
         [HttpPost("PostAsincPayment")]
         public async Task<IActionResult> PostAsincPayment([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.AsincPayment> _list)
         {
@@ -509,7 +516,7 @@ namespace WebApi.Controllers
         }
 
 
-
+        [EndpointDescription("Confirmacion de relacion de retenciones recibidos")]
         [HttpPost("PostAsincRetention")]
         public async Task<IActionResult> PostAsincRetention([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.AsincPayment> _list)
         {
