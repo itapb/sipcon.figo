@@ -79,7 +79,8 @@ namespace WebApi.Controllers
                         Detail = g.Select(d => new Models.Details
                         {
                             InnerCode = d.InnerCode,
-                            Quantity = d.Quantity
+                            Quantity = d.Quantity,
+                            Serial = d.Serial,
                         }).ToList()
                     }).ToList();
 

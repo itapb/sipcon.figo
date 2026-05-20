@@ -48,15 +48,15 @@ namespace Models
         /// <summary>Fecha de vencimiento del documento o factura</summary>
         [Required(ErrorMessage = "DueDate es obligatoria")] public DateTime? DueDate { get; set; }
 
-        /// <summary>Saldo pendiente del rubro o porcion, del documento o factura</summary>
+        /// <summary>Saldo pendiente en Dolares, del rubro o porcion, del documento o factura</summary>
         [Required(ErrorMessage = "Balance es obligatorio")] public decimal Balance { get; set; } = 0;
 
-        /// <summary>Monto parcial del rubro o porcion de saldo, del documento o factura</summary>
+        /// <summary>Monto parcial en Dolares, del rubro o porcion de saldo, del documento o factura</summary>
         [Required(ErrorMessage = "Amount es obligatorio")] public decimal Amount { get; set; }
 
         /// <summary>Tasa dolar del documento o factura, del dia de la emision</summary>
         [Required(ErrorMessage = "Rate es obligatorio")] public decimal Rate { get; set; }
-        /// <summary>Monto total de saldo, del documento o factura</summary>
+        /// <summary>Monto total en Dolares, del documento o factura</summary>
         public decimal AmountFull { get; set; }
     }
 
