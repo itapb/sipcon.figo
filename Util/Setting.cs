@@ -101,23 +101,27 @@ namespace Util
             try
             {
                 string _valor = "";
-                if (Environment == "DEV")
-                {
-                    _valor = _Configuration.GetSection("Custom:ConnectionStrings:DEV").Value ?? "";
-                    ConnectionString = _valor;
-                }
-              
-                if (Environment == "QA")
-                {
-                    _valor = _Configuration.GetSection("Custom:ConnectionStrings:QA").Value ?? "";
-                    ConnectionString = _valor;
-                }
+                _valor = _Configuration.GetSection($"Custom:ConnectionStrings:{Environment}").Value ?? "";
+                ConnectionString = _valor;
 
-                if (Environment == "PROD")
-                {
-                    _valor = _Configuration.GetSection("Custom:ConnectionStrings:PROD").Value ?? "";
-                    ConnectionString = _valor;
-                }
+                //string _valor = "";
+                //if (Environment == "DEV")
+                //{
+                //    _valor = _Configuration.GetSection("Custom:ConnectionStrings:DEV").Value ?? "";
+                //    ConnectionString = _valor;
+                //}
+              
+                //if (Environment == "QA")
+                //{
+                //    _valor = _Configuration.GetSection("Custom:ConnectionStrings:QA").Value ?? "";
+                //    ConnectionString = _valor;
+                //}
+
+                //if (Environment == "PROD")
+                //{
+                //    _valor = _Configuration.GetSection("Custom:ConnectionStrings:PROD").Value ?? "";
+                //    ConnectionString = _valor;
+                //}
 
    
                 if (ConnectionString == "")
