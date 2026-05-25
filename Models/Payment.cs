@@ -100,6 +100,9 @@ namespace Models
 
         [SwaggerIgnore] public string? StatusName { get; set; }
 
+        /// <summary>Monto del pago</summary>
+        [Required] public decimal? Amount { get; set; }
+
     }
     public class RetentionFull
     {
