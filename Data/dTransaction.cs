@@ -426,6 +426,8 @@ namespace Data
                 string _jsonstring = Util.Json.ConvertToJsonString(_list);
                 Parameter _parameter = new Parameter();
                 _parameter.AddSqlParameter("@DATA", _jsonstring);
+                _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
+
                 Mapping _mapping = new Mapping();
                 _mapping.SetDefaultPostMapping();
                 Util.Data _data = Util.Data.GetInstance();
