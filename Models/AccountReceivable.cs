@@ -94,5 +94,7 @@ namespace Models
 
         /// <summary>Monto parcial del rubro o porcion de saldo, del documento o factura</summary>
         public decimal Amount { get; set; }
+        /// <summary>Id de la tranasacion de relacion de Pago</summary>
+        public int? PaymentId { get; set; }
     }
 }

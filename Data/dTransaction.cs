@@ -76,7 +76,6 @@ namespace Data
                 _mapping.AddItem("DealerVat", "VVATDEALER");
                 _mapping.AddItem("InnerCode", "VINNERCODE");
                 _mapping.AddItem("Quantity", "IDISPATCHED");
-                _mapping.AddItem("Serial", "VSERIAL");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_DISPATCHSTOINVOINCING_FIGO", null);
@@ -583,7 +582,7 @@ namespace Data
                 _mapping.AddItem("DueDate", "DDUEDATE");
                 _mapping.AddItem("Amount", "NAMOUNT");
                 _mapping.AddItem("Balance", "NBALANCE");
-                
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_ACCOUNTRECEIVABLE_CONSOLIDATED", _parameter);
@@ -636,6 +635,7 @@ namespace Data
                 _mapping.AddItem("DueDate", "DDUEDATE");
                 _mapping.AddItem("Amount", "NAMOUNT");
                 _mapping.AddItem("Balance", "NBALANCE");
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
 
 
                 Util.Data _data = Util.Data.GetInstance();
