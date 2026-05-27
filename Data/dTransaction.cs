@@ -580,7 +580,7 @@ namespace Data
                 _mapping.AddItem("DueDate", "DDUEDATE");
                 _mapping.AddItem("Amount", "NAMOUNT");
                 _mapping.AddItem("Balance", "NBALANCE");
-                
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_ACCOUNTRECEIVABLE_CONSOLIDATED", _parameter);
@@ -633,6 +633,7 @@ namespace Data
                 _mapping.AddItem("DueDate", "DDUEDATE");
                 _mapping.AddItem("Amount", "NAMOUNT");
                 _mapping.AddItem("Balance", "NBALANCE");
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
 
 
                 Util.Data _data = Util.Data.GetInstance();
