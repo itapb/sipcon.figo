@@ -96,6 +96,15 @@ namespace Models
        
     }
 
+    public class RetentionFull
+    {
+
+        public required Document Document { get; set; }
+        public List<DocumentDetailRetention>? DocumentDetail { get; set; } = new List<DocumentDetailRetention>();
+        public List<PaymentDetails>? PaymentDetails { get; set; } = new List<PaymentDetails>();
+
+    }
+
 
     public class AsincPayment
     {

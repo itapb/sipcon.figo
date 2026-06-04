@@ -1,5 +1,6 @@
-﻿using System.Data;
+﻿using DocumentFormat.OpenXml.EMMA;
 using Models;
+using System.Data;
 using Util;
 
 namespace Data
@@ -640,7 +641,7 @@ namespace Data
         }
 
 
-        public async Task<Response<List<Models.DocumentDetail>>> GetAccount_Retention(String supplierVat)
+        public async Task<Response<List<Models.DocumentDetailRetention>>> GetAccount_Retention(String supplierVat)
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
@@ -654,9 +655,9 @@ namespace Data
         }
 
 
-        private async Task<Response<List<Models.DocumentDetail>>> _GetAccount_Retention(String supplierVat)
+        private async Task<Response<List<Models.DocumentDetailRetention>>> _GetAccount_Retention(String supplierVat)
         {
-            Response<List<Models.DocumentDetail>> _response = new Response<List<Models.DocumentDetail>>();
+            Response<List<Models.DocumentDetailRetention>> _response = new Response<List<Models.DocumentDetailRetention>>();
 
             try
             {
@@ -675,10 +676,22 @@ namespace Data
                 _mapping.AddItem("PaidAmount", "NPAIDAMOUNT");
                 _mapping.AddItem("AmountRate", "NRATE");
                 _mapping.AddItem("DateRate", "DDATERATE");
-        
+                _mapping.AddItem("Serie", "VSERIE");
+                _mapping.AddItem("Control", "VCONTROL");
+                _mapping.AddItem("Tax", "NTAX");
+                _mapping.AddItem("WithholdTax", "NWITHHOLDTAX");
+                _mapping.AddItem("Base", "NBASE");
+                _mapping.AddItem("AmountTax", "NAMOUNTTAX");
+                _mapping.AddItem("AmountNonTax", "NAMOUNTNONTAX");
+                _mapping.AddItem("Sust", "NSUST");
+                _mapping.AddItem("Secuence", "NSECUENCE");
+                _mapping.AddItem("Date", "DDATE");
+
+
+
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_ACCOUNTRECEIVABLE_RETENTION", _parameter);
-                _response.Data = _data.GetList<Models.DocumentDetail>(_mapping, _table);
+                _response.Data = _data.GetList<Models.DocumentDetailRetention>(_mapping, _table);
                 _response.SetGetResponse(_table);
 
             }
