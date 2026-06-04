@@ -471,8 +471,7 @@ namespace Data
                 _mapping.AddItem("SupplierVat", "VSUPPLIERVAT");
                 _mapping.AddItem("DealerVat", "VDEALERVAT");
                 _mapping.AddItem("Date", "DDATE");
-                _mapping.AddItem("Reference", "VREFERENCE");
-                _mapping.AddItem("Reference", "VCURRENCY");
+                _mapping.AddItem("Currency", "VCURRENCY");
                 _mapping.AddItem("DocumentType", "VDOCUMENTTYPE");
 
 
@@ -572,8 +571,7 @@ namespace Data
                 _mapping.AddItem("SupplierVat", "VSUPPLIERVAT");
                 _mapping.AddItem("DealerVat", "VDEALERVAT");
                 _mapping.AddItem("Date", "DDATE");
-                _mapping.AddItem("Reference", "VREFERENCE");
-                _mapping.AddItem("Reference", "VCURRENCY");
+                _mapping.AddItem("Currency", "VCURRENCY");
                 _mapping.AddItem("DocumentType", "VDOCUMENTTYPE");
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_RETENTION_CONSOLIDATED", _parameter);
