@@ -441,6 +441,53 @@ namespace Data
             return _response;
         }
 
+
+        public async Task<Response<List<Models.Document>>> GetPayment_Receipt(String supplierVat, Boolean proforma)
+        {
+            await _semaphore.WaitAsync(Util.Setting.TimeOut);
+            try
+            {
+                return await _GetPayment_Receipt(supplierVat, proforma);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+
+
+        private async Task<Response<List<Models.Document>>> _GetPayment_Receipt(String supplierVat, Boolean proforma)
+        {
+            Response<List<Models.Document>> _response = new Response<List<Models.Document>>();
+
+            try
+            {
+                Util.Parameter _parameter = new Util.Parameter();
+                _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
+                _parameter.AddSqlParameter("@BPROFORMA", proforma);
+
+                Mapping _mapping = new Mapping();
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
+                _mapping.AddItem("SupplierVat", "VSUPPLIERVAT");
+                _mapping.AddItem("DealerVat", "VDEALERVAT");
+                _mapping.AddItem("Date", "DDATE");
+                _mapping.AddItem("Currency", "VCURRENCY");
+                _mapping.AddItem("DocumentType", "VDOCUMENTTYPE");
+
+
+                Util.Data _data = Util.Data.GetInstance();
+                DataTable _table = await _data.GetDataTable("USP_GET_PAYMENT_RECEIPT", _parameter);
+                _response.Data = _data.GetList<Models.Document>(_mapping, _table);
+                _response.SetGetResponse(_table);
+
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(ex);
+            }
+            return _response;
+        }
+
         public async Task<Response<List<Models.PaymentDetails>>> GetPayments_Consolidated(String supplierVat, Boolean proforma)
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
@@ -467,20 +514,19 @@ namespace Data
 
                 Mapping _mapping = new Mapping();
                 _mapping.AddItem("Id", "ID");
-                _mapping.AddItem("Date", "DDATE");
-                _mapping.AddItem("Amount", "NAMOUNT");
-                _mapping.AddItem("Rate", "NRATE");
-                _mapping.AddItem("DateRate", "DDATERATE");
-                _mapping.AddItem("CurrencyName", "VCURRENCY");
-                _mapping.AddItem("TypeName", "VTYPE");
-                _mapping.AddItem("Reference", "VREFERENCE");
-                _mapping.AddItem("BankName", "VBANK");
-                _mapping.AddItem("AccountNumber", "VACCOUNTNUMBER");
-                _mapping.AddItem("DealerName", "VDEALER");
-                _mapping.AddItem("StatusName", "VESTATUS");
-                _mapping.AddItem("BankOriginName", "VBANKORIGIN");
                 _mapping.AddItem("PaymentId", "IDPAYMENT");
-                _mapping.AddItem("DealerVat", "VDEALERVAT");
+                _mapping.AddItem("SupplierVat", "VSUPPLIERVAT");
+                _mapping.AddItem("DocumentType", "VDOCUMENTTYPE");
+                _mapping.AddItem("PaymentType", "VTYPE");
+                _mapping.AddItem("Amount", "NAMOUNT");
+                _mapping.AddItem("Date", "DDATE");
+                _mapping.AddItem("Reference", "VREFERENCE");
+                _mapping.AddItem("AmountRate", "NRATE");
+                _mapping.AddItem("DateRate", "DDATERATE");
+                _mapping.AddItem("Currency", "VCURRENCY");
+                _mapping.AddItem("BankAccount", "VACCOUNTNUMBER");
+                _mapping.AddItem("BankVat", "VVATBANK");
+        
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_PAYMENTDETAILS_CONSOLIDATED", _parameter);
@@ -496,7 +542,7 @@ namespace Data
         }
 
 
-         public async Task<Response<List<Models.Retention>>> GetRetention_Consolidated(String supplierVat)
+         public async Task<Response<List<Models.Document>>> GetRetention_Consolidated(String supplierVat)
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
@@ -510,9 +556,9 @@ namespace Data
         }
 
 
-        private async Task<Response<List<Models.Retention>>> _GetRetention_Consolidated(String supplierVat)
+        private async Task<Response<List<Models.Document>>> _GetRetention_Consolidated(String supplierVat)
         {
-            Response<List<Models.Retention>> _response = new Response<List<Models.Retention>>();
+            Response<List<Models.Document>> _response = new Response<List<Models.Document>>();
 
             try
             {
@@ -521,18 +567,15 @@ namespace Data
             
 
                 Mapping _mapping = new Mapping();
-                _mapping.AddItem("Id", "ID");
-                _mapping.AddItem("Date", "DDATE");
-                _mapping.AddItem("Amount", "NAMOUNT");
-                _mapping.AddItem("Reference", "VREFERENCE");
-                _mapping.AddItem("DealerName", "VDEALER");
-                _mapping.AddItem("StatusName", "VESTATUS");           
                 _mapping.AddItem("PaymentId", "IDPAYMENT");
+                _mapping.AddItem("SupplierVat", "VSUPPLIERVAT");
                 _mapping.AddItem("DealerVat", "VDEALERVAT");
-
+                _mapping.AddItem("Date", "DDATE");
+                _mapping.AddItem("Currency", "VCURRENCY");
+                _mapping.AddItem("DocumentType", "VDOCUMENTTYPE");
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_RETENTION_CONSOLIDATED", _parameter);
-                _response.Data = _data.GetList<Models.Retention>(_mapping, _table);
+                _response.Data = _data.GetList<Models.Document>(_mapping, _table);
                 _response.SetGetResponse(_table);
 
             }
@@ -544,7 +587,7 @@ namespace Data
         }
 
 
-        public async Task<Response<List<Models.GetAccountReceivable>>> GetAccount_Consolidated(String supplierVat, Boolean proforma )
+        public async Task<Response<List<Models.DocumentDetail>>> GetAccount_Consolidated(String supplierVat, Boolean proforma )
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
@@ -558,9 +601,9 @@ namespace Data
         }
 
 
-        private async Task<Response<List<Models.GetAccountReceivable>>> _GetAccount_Consolidated(String supplierVat, Boolean proforma)
+        private async Task<Response<List<Models.DocumentDetail>>> _GetAccount_Consolidated(String supplierVat, Boolean proforma)
         {
-            Response<List<Models.GetAccountReceivable>> _response = new Response<List<Models.GetAccountReceivable>>();
+            Response<List<Models.DocumentDetail>> _response = new Response<List<Models.DocumentDetail>>();
 
             try
             {
@@ -572,21 +615,18 @@ namespace Data
 
                 Mapping _mapping = new Mapping();
                 _mapping.AddItem("Id", "ID");
-                _mapping.AddItem("DealerName", "VDEALER");
-                _mapping.AddItem("DealerVat", "VDEALERVAT");
-                _mapping.AddItem("Type", "VTYPECODE");
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
+                _mapping.AddItem("Type", "VTYPE");
                 _mapping.AddItem("Concept", "VCONCEPTCODE");
                 _mapping.AddItem("Number", "VNUMBER");
                 _mapping.AddItem("Reference", "VREFERENCE");
-                _mapping.AddItem("Date", "DDATE");
-                _mapping.AddItem("DueDate", "DDUEDATE");
-                _mapping.AddItem("Amount", "NAMOUNT");
-                _mapping.AddItem("Balance", "NBALANCE");
-                _mapping.AddItem("PaymentId", "IDPAYMENT");
+                _mapping.AddItem("PaidAmount", "NPAIDAMOUNT");
+                _mapping.AddItem("AmountRate", "NRATE");
+                _mapping.AddItem("DateRate", "DDATERATE");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_ACCOUNTRECEIVABLE_CONSOLIDATED", _parameter);
-                _response.Data = _data.GetList<Models.GetAccountReceivable>(_mapping, _table);
+                _response.Data = _data.GetList<Models.DocumentDetail>(_mapping, _table);
                 _response.SetGetResponse(_table);
 
             }
@@ -598,7 +638,7 @@ namespace Data
         }
 
 
-        public async Task<Response<List<Models.GetAccountReceivable>>> GetAccount_Retention(String supplierVat)
+        public async Task<Response<List<Models.DocumentDetail>>> GetAccount_Retention(String supplierVat)
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
@@ -612,9 +652,9 @@ namespace Data
         }
 
 
-        private async Task<Response<List<Models.GetAccountReceivable>>> _GetAccount_Retention(String supplierVat)
+        private async Task<Response<List<Models.DocumentDetail>>> _GetAccount_Retention(String supplierVat)
         {
-            Response<List<Models.GetAccountReceivable>> _response = new Response<List<Models.GetAccountReceivable>>();
+            Response<List<Models.DocumentDetail>> _response = new Response<List<Models.DocumentDetail>>();
 
             try
             {
@@ -625,22 +665,18 @@ namespace Data
 
                 Mapping _mapping = new Mapping();
                 _mapping.AddItem("Id", "ID");
-                _mapping.AddItem("DealerName", "VDEALER");
-                _mapping.AddItem("DealerVat", "VDEALERVAT");
-                _mapping.AddItem("Type", "VTYPECODE");
+                _mapping.AddItem("PaymentId", "IDPAYMENT");
+                _mapping.AddItem("Type", "VTYPE");
                 _mapping.AddItem("Concept", "VCONCEPTCODE");
                 _mapping.AddItem("Number", "VNUMBER");
                 _mapping.AddItem("Reference", "VREFERENCE");
-                _mapping.AddItem("Date", "DDATE");
-                _mapping.AddItem("DueDate", "DDUEDATE");
-                _mapping.AddItem("Amount", "NAMOUNT");
-                _mapping.AddItem("Balance", "NBALANCE");
-                _mapping.AddItem("PaymentId", "IDPAYMENT");
-
-
+                _mapping.AddItem("PaidAmount", "NPAIDAMOUNT");
+                _mapping.AddItem("AmountRate", "NRATE");
+                _mapping.AddItem("DateRate", "DDATERATE");
+        
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_ACCOUNTRECEIVABLE_RETENTION", _parameter);
-                _response.Data = _data.GetList<Models.GetAccountReceivable>(_mapping, _table);
+                _response.Data = _data.GetList<Models.DocumentDetail>(_mapping, _table);
                 _response.SetGetResponse(_table);
 
             }
@@ -651,47 +687,7 @@ namespace Data
             return _response;
         }
 
-        public async Task<Response<List<Models.Settlements>>> GetSettlements(String supplierVat)
-        {
-            await _semaphore.WaitAsync(Util.Setting.TimeOut);
-            try
-            {
-                return await _GetSettlements(supplierVat);
-            }
-            finally
-            {
-                _semaphore.Release();
-            }
-        }
-
-
-        private async Task<Response<List<Models.Settlements>>> _GetSettlements(String supplierVat)
-        {
-            Response<List<Models.Settlements>> _response = new Response<List<Models.Settlements>>();
-
-            try
-            {
-                Util.Parameter _parameter = new Util.Parameter();
-                _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
-
-
-                Mapping _mapping = new Mapping();
-                _mapping.AddItem("PaymentId", "IDPAYMENT");
-                _mapping.AddItem("AccountReceivableId", "IDACCOUNTRECEIVABLE");
-                
-
-                Util.Data _data = Util.Data.GetInstance();
-                DataTable _table = await _data.GetDataTable("USP_GET_SETTLEMENTS", _parameter);
-                _response.Data = _data.GetList<Models.Settlements>(_mapping, _table);
-                _response.SetGetResponse(_table);
-
-            }
-            catch (Exception ex)
-            {
-                _response.SetError(ex);
-            }
-            return _response;
-        }
+       
 
 
         public async Task<Response<Models.Result>> PostAsincPayment(List<Models.AsincPayment> _list)
