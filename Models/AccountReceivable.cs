@@ -61,40 +61,40 @@ namespace Models
     }
 
 
-    public class GetAccountReceivable 
+    public class DocumentDetail
     {
         public int Id { get; set; }
 
-        /// <summary>Nombre del Concesionario</summary>
-        public string? DealerName { get; set; } = string.Empty;
 
-        /// <summary>Rif del Concesionario</summary>
-        public string? DealerVat { get; set; } = string.Empty;
+        /// <summary>NU_RECIBO_COBRO / PRI_NU_PLANILLA</summary>
+        public int? PaymentId { get; set; }
 
-        /// <summary>Rubro o porcion del saldo: "B" Base, "I" Iva, "P" Placa</summary>
-        public string? Concept { get; set; } = string.Empty;
 
-        /// <summary>Tipo de documento o factura, "U" Unidades, "R" Repuestos, "P" Proforma, "G" Gastos Admin, "O" Otros </summary>
+        /// <summary>CTV_CO_TIPO_DOCUMENTO ,(FAC,NDB,NDN)</summary>
         public string? Type { get; set; } = string.Empty;
 
-        /// <summary>Numero de Factura o documento</summary>
+
+        /// <summary>CONCEPTO, (B,I,P,R)</summary>
+        public string? Concept { get; set; } = string.Empty;
+
+        /// <summary>NU_DOCUMENTO</summary>
         public string? Number { get; set; } = string.Empty;
 
         /// <summary>Nro de referencia de factura,opcional </summary>
         public string? Reference { get; set; } = string.Empty;
 
-        /// <summary>Fecha de emision del documento o factura</summary>
-        public DateTime? Date { get; set; }
 
-        /// <summary>Fecha de vencimiento del documento o factura</summary>
-        public DateTime? DueDate { get; set; }
-
-        /// <summary>Saldo pendiente del rubro o porcion, del documento o factura</summary>
-        public decimal Balance { get; set; } = 0;
-
-        /// <summary>Monto parcial del rubro o porcion de saldo, del documento o factura</summary>
+        /// <summary>MN_ABONO-  MN_ABONADO_A_DOC  </summary>
         public decimal Amount { get; set; }
-        /// <summary>Id de la tranasacion de relacion de Pago</summary>
-        public int? PaymentId { get; set; }
+
+        /// <summary>FC_TASA_CAMBIO</summary>
+        public decimal AmountRate { get; set; }
+
+        /// <summary>FE_TASA_CAMBIO</summary>
+        public DateTime? DateRate { get; set; }
+
+
+
+
     }
 }

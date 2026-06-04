@@ -344,77 +344,105 @@ namespace WebApi.Controllers
 
         [EndpointDescription("Obtener relacion de pagos aprobados")]
         [HttpGet("GetPayments_Consolidated")]
-        public async Task<IActionResult> GetPayments_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey,string supplierVat)
+        public async Task<IActionResult> GetPayments_Consolidated(  [FromHeader(Name = "X-API-KEY")] string apiKey,  string supplierVat)
         {
             try
             {
+                var response = new Models.Response<List<PaymentFull>>();
 
-                var response = new Models.Response<Models.Result>();
                 if (apiKey != Util.Setting.ApiKey)
                 {
                     response.SetError(new Exception("API KEY INVALIDA"));
                     return StatusCode(StatusCodes.Status401Unauthorized, response);
                 }
 
-                // 1. Obtener las 3 fuentes de datos
-                var paymentsTask = _dTransaction.GetPayments_Consolidated(supplierVat, false);
-                var accountsTask = _dTransaction.GetAccount_Consolidated(supplierVat, false);
-                var settlementsTask = _dTransaction.GetSettlements(supplierVat);
 
-                await Task.WhenAll(paymentsTask, accountsTask, settlementsTask);
+                // Obtener fuentes
+                var documentTask = _dTransaction.GetPayment_Receipt(supplierVat, false);
+                var detailTask = _dTransaction.GetAccount_Consolidated(supplierVat, false);
+                var paymentTask = _dTransaction.GetPayments_Consolidated(supplierVat, false);
 
-                var paymentsResponse = paymentsTask.Result;
-                var accountsResponse = accountsTask.Result;
-                var settlementsResponse = settlementsTask.Result;
 
-                if (paymentsResponse.Data == null)
-                    return Ok(new Models.Response<List<PaymentFull>> { Data = new List<PaymentFull>(), Message = "No hay datos", Status = 200 });
+                await Task.WhenAll(documentTask, detailTask, paymentTask);
 
-                // 2. Crear Lookups para acceso rápido O(1)
-                var detailsLookup = paymentsResponse.Data.ToLookup(p => p.PaymentId);
 
-                // Lookup de liquidaciones (Settlements) agrupado por PaymentId
-                var settlementsLookup = settlementsResponse.Data?.ToLookup(s => s.PaymentId);
+                var documentResponse = documentTask.Result;
+                var detailResponse = detailTask.Result;
+                var paymentResponse = paymentTask.Result;
 
-                // Diccionario de cuentas para búsqueda rápida por ID de cuenta
-                var accountsDict = accountsResponse.Data?.ToDictionary(a => a.Id, a => a);
 
-                // 3. Construir la respuesta consolidada
-                var paymentsFullList = detailsLookup.Select(group =>
+                if (documentResponse.Data == null)
                 {
-                    int paymentId = group.Key ?? 0;
-
-                    // Buscamos qué IDs de cuentas pertenecen a este pago mediante el settlement
-                    var relatedAccountIds = settlementsLookup[paymentId]
-                                            .Select(s => s.AccountReceivableId)
-                                            .ToList();
-
-                    // Filtramos las cuentas que coincidan con esos IDs
-                    var relatedAccounts = relatedAccountIds
-                                          .Where(id => id.HasValue && accountsDict.ContainsKey(id.Value))
-                                          .Select(id => accountsDict[id.Value])
-                                          .ToList();
-
-                    return new PaymentFull
+                    return Ok(new Models.Response<List<PaymentFull>>
                     {
-                        // Lista de detalles (todos los que comparten el mismo PaymentId)
-                        PaymentDetails = group.ToList(),
+                        Data = new List<PaymentFull>(),
+                        Message = "No hay datos",
+                        Status = 200
+                    });
+                }
 
-                        // Lista de cuentas (las que cruzaron en la tabla de muchos a muchos)
-                        AccountReceivable = relatedAccounts
-                    };
-                }).ToList();
+
+                // Lookups por IdPayment
+
+                var detailLookup = detailResponse.Data?
+                    .ToLookup(x => x.PaymentId);
+
+
+                var paymentLookup = paymentResponse.Data?
+                    .ToLookup(x => x.PaymentId);
+
+
+
+                // Construcción final
+
+                var paymentsFull = documentResponse.Data
+                    .Select(doc =>
+                    {
+
+                        var PaymentId = doc.PaymentId;
+
+
+                        return new PaymentFull
+                        {
+                            // Cabecera
+                            Document = doc,
+
+
+                            // Detalles relacionados
+                            DocumentDetail = detailLookup?
+                                [PaymentId]
+                                .ToList()
+                                ?? new List<DocumentDetail>(),
+
+
+                            // Pagos relacionados
+                            PaymentDetails = paymentLookup?
+                                [PaymentId]
+                                .ToList()
+                                ?? new List<PaymentDetails>()
+                        };
+
+
+                    })
+                    .ToList();
+
+
 
                 return Ok(new Models.Response<List<PaymentFull>>
                 {
-                    Data = paymentsFullList,
+                    Data = paymentsFull,
                     Status = 200,
-                    Total = paymentsFullList.Count
+                    Total = paymentsFull.Count
                 });
+
+
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                return StatusCode(
+                    StatusCodes.Status409Conflict,
+                    ex.Message
+                );
             }
         }
 
@@ -426,150 +454,199 @@ namespace WebApi.Controllers
         {
             try
             {
+                var response = new Models.Response<List<PaymentFull>>();
 
-                var response = new Models.Response<Models.Result>();
                 if (apiKey != Util.Setting.ApiKey)
                 {
                     response.SetError(new Exception("API KEY INVALIDA"));
                     return StatusCode(StatusCodes.Status401Unauthorized, response);
                 }
 
-                // 1. Obtener las 3 fuentes de datos
-                var paymentsTask = _dTransaction.GetPayments_Consolidated(supplierVat, true);
-                var accountsTask = _dTransaction.GetAccount_Consolidated(supplierVat, true);
-                var settlementsTask = _dTransaction.GetSettlements(supplierVat);
 
-                await Task.WhenAll(paymentsTask, accountsTask, settlementsTask);
+                // Obtener fuentes
+                var documentTask = _dTransaction.GetPayment_Receipt(supplierVat, true);
+                var detailTask = _dTransaction.GetAccount_Consolidated(supplierVat, true);
+                var paymentTask = _dTransaction.GetPayments_Consolidated(supplierVat, true);
 
-                var paymentsResponse = paymentsTask.Result;
-                var accountsResponse = accountsTask.Result;
-                var settlementsResponse = settlementsTask.Result;
 
-                if (paymentsResponse.Data == null)
-                    return Ok(new Models.Response<List<PaymentFull>> { Data = new List<PaymentFull>(), Message = "No hay datos", Status = 200 });
+                await Task.WhenAll(documentTask, detailTask, paymentTask);
 
-                // 2. Crear Lookups para acceso rápido O(1)
-                var detailsLookup = paymentsResponse.Data.ToLookup(p => p.PaymentId);
 
-                // Lookup de liquidaciones (Settlements) agrupado por PaymentId
-                var settlementsLookup = settlementsResponse.Data?.ToLookup(s => s.PaymentId);
+                var documentResponse = documentTask.Result;
+                var detailResponse = detailTask.Result;
+                var paymentResponse = paymentTask.Result;
 
-                // Diccionario de cuentas para búsqueda rápida por ID de cuenta
-                var accountsDict = accountsResponse.Data?.ToDictionary(a => a.Id, a => a);
 
-                // 3. Construir la respuesta consolidada
-                var paymentsFullList = detailsLookup.Select(group =>
+                if (documentResponse.Data == null)
                 {
-                    int paymentId = group.Key ?? 0;
-
-                    // Buscamos qué IDs de cuentas pertenecen a este pago mediante el settlement
-                    var relatedAccountIds = settlementsLookup[paymentId]
-                                            .Select(s => s.AccountReceivableId)
-                                            .ToList();
-
-                    // Filtramos las cuentas que coincidan con esos IDs
-                    var relatedAccounts = relatedAccountIds
-                                          .Where(id => id.HasValue && accountsDict.ContainsKey(id.Value))
-                                          .Select(id => accountsDict[id.Value])
-                                          .ToList();
-
-                    return new PaymentFull
+                    return Ok(new Models.Response<List<PaymentFull>>
                     {
-                        // Lista de detalles (todos los que comparten el mismo PaymentId)
-                        PaymentDetails = group.ToList(),
+                        Data = new List<PaymentFull>(),
+                        Message = "No hay datos",
+                        Status = 200
+                    });
+                }
 
-                        // Lista de cuentas (las que cruzaron en la tabla de muchos a muchos)
-                        AccountReceivable = relatedAccounts
-                    };
-                }).ToList();
+
+                // Lookups por IdPayment
+
+                var detailLookup = detailResponse.Data?
+                    .ToLookup(x => x.PaymentId);
+
+
+                var paymentLookup = paymentResponse.Data?
+                    .ToLookup(x => x.PaymentId);
+
+
+
+                // Construcción final
+
+                var paymentsFull = documentResponse.Data
+                    .Select(doc =>
+                    {
+
+                        var PaymentId = doc.PaymentId;
+
+
+                        return new PaymentFull
+                        {
+                            // Cabecera
+                            Document = doc,
+
+
+                            // Detalles relacionados
+                            DocumentDetail = detailLookup?
+                                [PaymentId]
+                                .ToList()
+                                ?? new List<DocumentDetail>(),
+
+
+                            // Pagos relacionados
+                            PaymentDetails = paymentLookup?
+                                [PaymentId]
+                                .ToList()
+                                ?? new List<PaymentDetails>()
+                        };
+
+
+                    })
+                    .ToList();
+
+
 
                 return Ok(new Models.Response<List<PaymentFull>>
                 {
-                    Data = paymentsFullList,
+                    Data = paymentsFull,
                     Status = 200,
-                    Total = paymentsFullList.Count
+                    Total = paymentsFull.Count
                 });
+
+
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                return StatusCode(
+                    StatusCodes.Status409Conflict,
+                    ex.Message
+                );
             }
         }
 
         [EndpointDescription("Obtener relacion de retenciones aprobados")]
         [HttpGet("GetRetention_Consolidated")]
-        [ProducesResponseType(typeof(Models.Response<List<RetentionFull>>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<Models.Response<List<RetentionFull>>>> GetRetention_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
+        [ProducesResponseType(typeof(Models.Response<List<PaymentFull>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<Models.Response<List<PaymentFull>>>> GetRetention_Consolidated(
+    [FromHeader(Name = "X-API-KEY")] string apiKey,
+    string supplierVat)
         {
             try
             {
 
                 var response = new Models.Response<Models.Result>();
+
                 if (apiKey != Util.Setting.ApiKey)
                 {
                     response.SetError(new Exception("API KEY INVALIDA"));
                     return StatusCode(StatusCodes.Status401Unauthorized, response);
                 }
 
-                // 1. Obtener las 3 fuentes de datos
-                var paymentsTask = _dTransaction.GetRetention_Consolidated(supplierVat);
-                var accountsTask = _dTransaction.GetAccount_Retention(supplierVat);
-                var settlementsTask = _dTransaction.GetSettlements(supplierVat);
 
-                await Task.WhenAll(paymentsTask, accountsTask, settlementsTask);
+                // Obtener datos
+                var documentTask = _dTransaction.GetRetention_Consolidated(supplierVat);
+                var detailTask = _dTransaction.GetAccount_Retention(supplierVat);
 
-                var paymentsResponse = paymentsTask.Result;
-                var accountsResponse = accountsTask.Result;
-                var settlementsResponse = settlementsTask.Result;
 
-                if (paymentsResponse.Data == null)
-                    return Ok(new Models.Response<List<RetentionFull>> { Data = new List<RetentionFull>(), Message = "No hay datos", Status = 200 });
+                await Task.WhenAll(documentTask, detailTask);
 
-                // 2. Crear Lookups para acceso rápido O(1)
-                var detailsLookup = paymentsResponse.Data.ToLookup(p => p.PaymentId);
 
-                // Lookup de liquidaciones (Settlements) agrupado por PaymentId
-                var settlementsLookup = settlementsResponse.Data?.ToLookup(s => s.PaymentId);
+                var documentResponse = documentTask.Result;
+                var detailResponse = detailTask.Result;
 
-                // Diccionario de cuentas para búsqueda rápida por ID de cuenta
-                var accountsDict = accountsResponse.Data?.ToDictionary(a => a.Id, a => a);
 
-                // 3. Construir la respuesta consolidada
-                var paymentsFullList = detailsLookup.Select(group =>
+                if (documentResponse.Data == null)
                 {
-                    int paymentId = group.Key ?? 0;
-
-                    // Buscamos qué IDs de cuentas pertenecen a este pago mediante el settlement
-                    var relatedAccountIds = settlementsLookup[paymentId]
-                                            .Select(s => s.AccountReceivableId)
-                                            .ToList();
-
-                    // Filtramos las cuentas que coincidan con esos IDs
-                    var relatedAccounts = relatedAccountIds
-                                          .Where(id => id.HasValue && accountsDict.ContainsKey(id.Value))
-                                          .Select(id => accountsDict[id.Value])
-                                          .ToList();
-
-                    return new RetentionFull
+                    return Ok(new Models.Response<List<PaymentFull>>
                     {
-                        // Lista de detalles (todos los que comparten el mismo PaymentId)
-                        Retentions = group.ToList(),
+                        Data = new List<PaymentFull>(),
+                        Message = "No hay datos",
+                        Status = 200
+                    });
+                }
 
-                        // Lista de cuentas (las que cruzaron en la tabla de muchos a muchos)
-                        AccountReceivable = relatedAccounts
-                    };
-                }).ToList();
 
-                return Ok(new Models.Response<List<RetentionFull>>
+
+                // Lookup de detalles por IdPayment
+                var detailLookup = detailResponse.Data?
+                    .ToLookup(x => x.PaymentId);
+
+
+
+                var retentionFullList = documentResponse.Data
+                    .Select(doc =>
+                    {
+
+                        var paymentId = doc.PaymentId;
+
+
+                        return new PaymentFull
+                        {
+
+                            // Cabecera de retención
+                            Document = doc,
+
+
+                            // Detalles relacionados
+                            DocumentDetail = detailLookup?
+                                [paymentId]
+                                .ToList()
+                                ?? new List<DocumentDetail>(),
+
+
+                            // Retención no tiene pagos
+                            PaymentDetails = new List<PaymentDetails>()
+
+                        };
+
+
+                    })
+                    .ToList();
+
+
+
+                return Ok(new Models.Response<List<PaymentFull>>
                 {
-                    Data = paymentsFullList,
+                    Data = retentionFullList,
                     Status = 200,
-                    Total = paymentsFullList.Count
+                    Total = retentionFullList.Count
                 });
+
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+                return StatusCode(
+                    StatusCodes.Status409Conflict,
+                    ex.Message
+                );
             }
         }
 
