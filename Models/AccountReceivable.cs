@@ -60,7 +60,7 @@ namespace Models
         public decimal AmountFull { get; set; }
 
         // atributos nuevos de la factura
-        public string Serial { get; set; } = "";
+        public string Serie { get; set; } = "";
         public string Control { get; set; } = "";
         public decimal Tax { get; set; }
         public decimal WithholdTax { get; set; }
