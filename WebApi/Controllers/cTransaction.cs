@@ -554,8 +554,8 @@ namespace WebApi.Controllers
 
         [EndpointDescription("Obtener relacion de retenciones aprobados")]
         [HttpGet("GetRetention_Consolidated")]
-        [ProducesResponseType(typeof(Models.Response<List<PaymentFull>>), StatusCodes.Status200OK)]
-        public async Task<ActionResult<Models.Response<List<PaymentFull>>>> GetRetention_Consolidated(  [FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
+        [ProducesResponseType(typeof(Models.Response<List<RetentionFull>>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<Models.Response<List<RetentionFull>>>> GetRetention_Consolidated(  [FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
         {
             try
             {
@@ -583,9 +583,9 @@ namespace WebApi.Controllers
 
                 if (documentResponse.Data == null)
                 {
-                    return Ok(new Models.Response<List<PaymentFull>>
+                    return Ok(new Models.Response<List<RetentionFull>>
                     {
-                        Data = new List<PaymentFull>(),
+                        Data = new List<RetentionFull>(),
                         Message = "No hay datos",
                         Status = 200
                     });
@@ -606,7 +606,7 @@ namespace WebApi.Controllers
                         var paymentId = doc.PaymentId;
 
 
-                        return new PaymentFull
+                        return new RetentionFull
                         {
 
                             // Cabecera de retención
@@ -617,7 +617,7 @@ namespace WebApi.Controllers
                             DocumentDetail = detailLookup?
                                 [paymentId]
                                 .ToList()
-                                ?? new List<DocumentDetail>(),
+                                ?? new List<DocumentDetailRetention>(),
 
 
                             // Retención no tiene pagos
@@ -631,7 +631,7 @@ namespace WebApi.Controllers
 
 
 
-                return Ok(new Models.Response<List<PaymentFull>>
+                return Ok(new Models.Response<List<RetentionFull>>
                 {
                     Data = retentionFullList,
                     Status = 200,

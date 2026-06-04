@@ -103,8 +103,57 @@ namespace Models
         /// <summary>FE_TASA_CAMBIO</summary>
         public DateTime? DateRate { get; set; }
 
+    }
 
 
+    public class DocumentDetailRetention
+    {
+        public int Id { get; set; }
+
+
+        /// <summary>NU_RECIBO_COBRO / PRI_NU_PLANILLA</summary>
+        public int? PaymentId { get; set; }
+
+
+        /// <summary>CTV_CO_TIPO_DOCUMENTO ,(FAC,NDB,NDN)</summary>
+        public string? Type { get; set; } = string.Empty;
+
+
+        /// <summary>CONCEPTO, (B,I,P,R)</summary>
+        public string? Concept { get; set; } = string.Empty;
+
+        /// <summary>NU_DOCUMENTO</summary>
+        public string? Number { get; set; } = string.Empty;
+
+        /// <summary>Nro de COMPROBANTE DE RETENCION APLICADO </summary>
+        public string? Reference { get; set; } = string.Empty;
+
+
+        /// <summary>MN_ABONO-  MN_ABONADO_A_DOC  </summary>
+        public decimal Amount { get; set; }
+
+        /// <summary>FC_TASA_CAMBIO</summary>
+        public decimal AmountRate { get; set; }
+
+        /// <summary>FE_TASA_CAMBIO</summary>
+        public DateTime? DateRate { get; set; }
+
+        /// <summary>FECHA EMISION</summary>
+        public DateTime? Date { get; set; }
+
+
+        // atributos nuevos de la factura
+        public string Serie { get; set; } = "";
+        public string Control { get; set; } = "";
+        public decimal Tax { get; set; }
+        public decimal WithholdTax { get; set; }
+        public decimal Base { get; set; }
+        public decimal AmountTax { get; set; }
+        public decimal AmountNonTax { get; set; }
+
+        public decimal Sust { get; set; }
+
+        public int Secuence { get; set; }
 
     }
 }
