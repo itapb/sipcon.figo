@@ -76,6 +76,7 @@ namespace Data
                 _mapping.AddItem("DealerVat", "VVATDEALER");
                 _mapping.AddItem("InnerCode", "VINNERCODE");
                 _mapping.AddItem("Quantity", "IDISPATCHED");
+                _mapping.AddItem("Serial", "VSERIAL");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_DISPATCHSTOINVOINCING_FIGO", null);
@@ -573,6 +574,7 @@ namespace Data
                 _mapping.AddItem("Date", "DDATE");
                 _mapping.AddItem("Currency", "VCURRENCY");
                 _mapping.AddItem("DocumentType", "VDOCUMENTTYPE");
+                _mapping.AddItem("Reference", "VREFERENCE");
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_RETENTION_CONSOLIDATED", _parameter);
                 _response.Data = _data.GetList<Models.Document>(_mapping, _table);
