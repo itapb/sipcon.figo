@@ -34,6 +34,9 @@ namespace Models
         /// <summary>CTV_CO_TIPO_DOCUMENTO</summary>
         [SwaggerIgnore] public string? DocumentType { get; set; }
 
+        /// <summary>NUMERO COMPROBANTE RET/summary>
+        [SwaggerIgnore] public string? Reference { get; set; }
+
 
     }
 
