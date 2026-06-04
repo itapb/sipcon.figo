@@ -58,6 +58,16 @@ namespace Models
         [Required(ErrorMessage = "Rate es obligatorio")] public decimal Rate { get; set; }
         /// <summary>Monto total en Dolares, del documento o factura</summary>
         public decimal AmountFull { get; set; }
+
+        // atributos nuevos de la factura
+        public string Serie { get; set; } = "";
+        public string Control { get; set; } = "";
+        public decimal Tax { get; set; }
+        public decimal WithholdTax { get; set; }
+        public decimal Base { get; set; }
+        public decimal AmountTax { get; set; }
+        public decimal AmountNonTax { get; set; }
+
     }
 
 
