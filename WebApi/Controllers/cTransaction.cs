@@ -358,9 +358,9 @@ namespace WebApi.Controllers
 
 
                 // Obtener fuentes
-                var documentTask = _dTransaction.GetPayment_Receipt(supplierVat, false);
-                var detailTask = _dTransaction.GetAccount_Consolidated(supplierVat, false);
-                var paymentTask = _dTransaction.GetPayments_Consolidated(supplierVat, false);
+                var documentTask = _dTransaction.GetPayment_Receipt(supplierVat);
+                var detailTask = _dTransaction.GetAccount_Consolidated(supplierVat);
+                var paymentTask = _dTransaction.GetPayments_Consolidated(supplierVat);
 
 
                 await Task.WhenAll(documentTask, detailTask, paymentTask);
@@ -447,110 +447,6 @@ namespace WebApi.Controllers
         }
 
 
-
-        [EndpointDescription("Obtener relacion de pagos de tipo PROFORMA aprobados")]
-        [HttpGet("GetPaymentsProforma_Consolidated")]
-        public async Task<IActionResult> GetPaymentsProforma_Consolidated([FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
-        {
-            try
-            {
-                var response = new Models.Response<List<PaymentFull>>();
-
-                if (apiKey != Util.Setting.ApiKey)
-                {
-                    response.SetError(new Exception("API KEY INVALIDA"));
-                    return StatusCode(StatusCodes.Status401Unauthorized, response);
-                }
-
-
-                // Obtener fuentes
-                var documentTask = _dTransaction.GetPayment_Receipt(supplierVat, true);
-                var detailTask = _dTransaction.GetAccount_Consolidated(supplierVat, true);
-                var paymentTask = _dTransaction.GetPayments_Consolidated(supplierVat, true);
-
-
-                await Task.WhenAll(documentTask, detailTask, paymentTask);
-
-
-                var documentResponse = documentTask.Result;
-                var detailResponse = detailTask.Result;
-                var paymentResponse = paymentTask.Result;
-
-
-                if (documentResponse.Data == null)
-                {
-                    return Ok(new Models.Response<List<PaymentFull>>
-                    {
-                        Data = new List<PaymentFull>(),
-                        Message = "No hay datos",
-                        Status = 200
-                    });
-                }
-
-
-                // Lookups por IdPayment
-
-                var detailLookup = detailResponse.Data?
-                    .ToLookup(x => x.PaymentId);
-
-
-                var paymentLookup = paymentResponse.Data?
-                    .ToLookup(x => x.PaymentId);
-
-
-
-                // Construcción final
-
-                var paymentsFull = documentResponse.Data
-                    .Select(doc =>
-                    {
-
-                        var PaymentId = doc.PaymentId;
-
-
-                        return new PaymentFull
-                        {
-                            // Cabecera
-                            Document = doc,
-
-
-                            // Detalles relacionados
-                            DocumentDetail = detailLookup?
-                                [PaymentId]
-                                .ToList()
-                                ?? new List<DocumentDetail>(),
-
-
-                            // Pagos relacionados
-                            PaymentDetails = paymentLookup?
-                                [PaymentId]
-                                .ToList()
-                                ?? new List<PaymentDetails>()
-                        };
-
-
-                    })
-                    .ToList();
-
-
-
-                return Ok(new Models.Response<List<PaymentFull>>
-                {
-                    Data = paymentsFull,
-                    Status = 200,
-                    Total = paymentsFull.Count
-                });
-
-
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(
-                    StatusCodes.Status409Conflict,
-                    ex.Message
-                );
-            }
-        }
 
         [EndpointDescription("Obtener relacion de retenciones aprobados")]
         [HttpGet("GetRetention_Consolidated")]
