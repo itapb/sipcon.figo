@@ -444,12 +444,12 @@ namespace Data
         }
 
 
-        public async Task<Response<List<Models.Document>>> GetPayment_Receipt(String supplierVat, Boolean proforma)
+        public async Task<Response<List<Models.Document>>> GetPayment_Receipt(String supplierVat)
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
             {
-                return await _GetPayment_Receipt(supplierVat, proforma);
+                return await _GetPayment_Receipt(supplierVat);
             }
             finally
             {
@@ -458,7 +458,7 @@ namespace Data
         }
 
 
-        private async Task<Response<List<Models.Document>>> _GetPayment_Receipt(String supplierVat, Boolean proforma)
+        private async Task<Response<List<Models.Document>>> _GetPayment_Receipt(String supplierVat)
         {
             Response<List<Models.Document>> _response = new Response<List<Models.Document>>();
 
@@ -466,7 +466,6 @@ namespace Data
             {
                 Util.Parameter _parameter = new Util.Parameter();
                 _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
-                _parameter.AddSqlParameter("@BPROFORMA", proforma);
 
                 Mapping _mapping = new Mapping();
                 _mapping.AddItem("PaymentId", "IDPAYMENT");
@@ -490,12 +489,12 @@ namespace Data
             return _response;
         }
 
-        public async Task<Response<List<Models.PaymentDetails>>> GetPayments_Consolidated(String supplierVat, Boolean proforma)
+        public async Task<Response<List<Models.PaymentDetails>>> GetPayments_Consolidated(String supplierVat)
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
             {
-                return await _GetPayments_Consolidated(supplierVat, proforma);
+                return await _GetPayments_Consolidated(supplierVat);
             }
             finally
             {
@@ -504,7 +503,7 @@ namespace Data
         }
 
 
-        private async Task<Response<List<Models.PaymentDetails>>> _GetPayments_Consolidated(String supplierVat, Boolean proforma)
+        private async Task<Response<List<Models.PaymentDetails>>> _GetPayments_Consolidated(String supplierVat)
         {
             Response<List<Models.PaymentDetails>> _response = new Response<List<Models.PaymentDetails>>();
 
@@ -512,8 +511,6 @@ namespace Data
             {
                 Util.Parameter _parameter = new Util.Parameter();
                 _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
-                _parameter.AddSqlParameter("@BPROFORMA", proforma);
-
                 Mapping _mapping = new Mapping();
                 _mapping.AddItem("Id", "ID");
                 _mapping.AddItem("PaymentId", "IDPAYMENT");
@@ -590,12 +587,12 @@ namespace Data
         }
 
 
-        public async Task<Response<List<Models.DocumentDetail>>> GetAccount_Consolidated(String supplierVat, Boolean proforma )
+        public async Task<Response<List<Models.DocumentDetail>>> GetAccount_Consolidated(String supplierVat )
         {
             await _semaphore.WaitAsync(Util.Setting.TimeOut);
             try
             {
-                return await _GetAccount_Consolidated(supplierVat, proforma);
+                return await _GetAccount_Consolidated(supplierVat);
             }
             finally
             {
@@ -604,7 +601,7 @@ namespace Data
         }
 
 
-        private async Task<Response<List<Models.DocumentDetail>>> _GetAccount_Consolidated(String supplierVat, Boolean proforma)
+        private async Task<Response<List<Models.DocumentDetail>>> _GetAccount_Consolidated(String supplierVat)
         {
             Response<List<Models.DocumentDetail>> _response = new Response<List<Models.DocumentDetail>>();
 
@@ -613,7 +610,6 @@ namespace Data
 
                 Util.Parameter _parameter = new Util.Parameter();
                 _parameter.AddSqlParameter("@VSUPPLIERVAT", supplierVat);
-                _parameter.AddSqlParameter("@BPROFORMA", proforma);
 
 
                 Mapping _mapping = new Mapping();
