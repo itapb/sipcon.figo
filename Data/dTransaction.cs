@@ -680,7 +680,7 @@ namespace Data
                 _mapping.AddItem("Concept", "VCONCEPTCODE");
                 _mapping.AddItem("Number", "VNUMBER");
                 _mapping.AddItem("Reference", "VREFERENCE");
-                _mapping.AddItem("PaidAmount", "NPAIDAMOUNT");
+                _mapping.AddItem("Amount", "NPAIDAMOUNT");
                 _mapping.AddItem("AmountRate", "NRATE");
                 _mapping.AddItem("DateRate", "DDATERATE");
                 _mapping.AddItem("Serie", "VSERIE");
