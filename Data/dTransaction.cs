@@ -156,6 +156,7 @@ namespace Data
                 _mapping.AddItem("SupplierVat", "VVATSUPPLIER");
                 _mapping.AddItem("Vin", "VVIN");
                 _mapping.AddItem("Condition", "VCONDITION");
+                _mapping.AddItem("Heavy", "BHEAVY");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_PLATESTOASSIGN_FIGO", _parameter);
