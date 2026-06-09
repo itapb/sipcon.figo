@@ -53,15 +53,26 @@ namespace Models
 
         /// <summary>Tasa dolar del documento o factura, del dia de la emision</summary>
         [Required(ErrorMessage = "Rate es obligatorio")] public decimal Rate { get; set; }
-        /// <summary>Monto total en Dolares, del documento o factura</summary>
+        
+        /// <summary>Monto total en Dolares, de la factura o documento</summary>
         public decimal AmountFull { get; set; }
 
-        // atributos nuevos de la factura
+        /// <summary>Codigo de serie de la factura o documenot</summary>
         public string Serie { get; set; } = "";
+
+        /// <summary>Nro de control de la factura o documento</summary>
         public string Control { get; set; } = "";
+
+        /// <summary>Porcentaje de impuesto de la factura o documento</summary>
         public decimal Tax { get; set; }
+
+        /// <summary>Base imponible de la factura o documento</summary>
         public decimal Base { get; set; }
+
+        /// <summary>Monto total del impuesto, de la factura o documento</summary>
         public decimal AmountTax { get; set; }
+
+        /// <summary>Monto total exento, de la factura o documento</summary>
         public decimal AmountNonTax { get; set; }
 
     }
@@ -98,6 +109,18 @@ namespace Models
 
         /// <summary>FE_TASA_CAMBIO</summary>
         public DateTime? DateRate { get; set; }
+
+
+        // atributos nuevos de la factura
+        public string Serie { get; set; } = "";
+        public string Control { get; set; } = "";
+        public decimal Tax { get; set; }
+        public decimal WithholdTax { get; set; }
+        public decimal Base { get; set; }
+        public decimal AmountTax { get; set; }
+        public decimal AmountNonTax { get; set; }
+        public decimal Sust { get; set; }
+        public int Secuence { get; set; }
 
     }
 
