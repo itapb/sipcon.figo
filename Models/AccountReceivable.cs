@@ -49,10 +49,7 @@ namespace Models
         [Required(ErrorMessage = "DueDate es obligatoria")] public DateTime? DueDate { get; set; }
 
         /// <summary>Saldo pendiente en Dolares, del rubro o porcion, del documento o factura</summary>
-        [Required(ErrorMessage = "Balance es obligatorio")] public decimal Balance { get; set; } = 0;
-
-        /// <summary>Monto parcial en Dolares, del rubro o porcion de saldo, del documento o factura</summary>
-        [Required(ErrorMessage = "Amount es obligatorio")] public decimal Amount { get; set; }
+        [Required(ErrorMessage = "Balance O Saldo es obligatorio")] public decimal Balance { get; set; } = 0;
 
         /// <summary>Tasa dolar del documento o factura, del dia de la emision</summary>
         [Required(ErrorMessage = "Rate es obligatorio")] public decimal Rate { get; set; }
@@ -63,7 +60,6 @@ namespace Models
         public string Serie { get; set; } = "";
         public string Control { get; set; } = "";
         public decimal Tax { get; set; }
-        public decimal WithholdTax { get; set; }
         public decimal Base { get; set; }
         public decimal AmountTax { get; set; }
         public decimal AmountNonTax { get; set; }
