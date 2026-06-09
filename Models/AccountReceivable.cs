@@ -53,15 +53,26 @@ namespace Models
 
         /// <summary>Tasa dolar del documento o factura, del dia de la emision</summary>
         [Required(ErrorMessage = "Rate es obligatorio")] public decimal Rate { get; set; }
-        /// <summary>Monto total en Dolares, del documento o factura</summary>
+        
+        /// <summary>Monto total en Dolares, de la factura o documento</summary>
         public decimal AmountFull { get; set; }
 
-        // atributos nuevos de la factura
+        /// <summary>Codigo de serie de la factura o documenot</summary>
         public string Serie { get; set; } = "";
+
+        /// <summary>Nro de control de la factura o documento</summary>
         public string Control { get; set; } = "";
+
+        /// <summary>Porcentaje de impuesto de la factura o documento</summary>
         public decimal Tax { get; set; }
+
+        /// <summary>Base imponible de la factura o documento</summary>
         public decimal Base { get; set; }
+
+        /// <summary>Monto total del impuesto, de la factura o documento</summary>
         public decimal AmountTax { get; set; }
+
+        /// <summary>Monto total exento, de la factura o documento</summary>
         public decimal AmountNonTax { get; set; }
 
     }
