@@ -156,6 +156,7 @@ namespace Data
                 _mapping.AddItem("SupplierVat", "VVATSUPPLIER");
                 _mapping.AddItem("Vin", "VVIN");
                 _mapping.AddItem("Condition", "VCONDITION");
+                _mapping.AddItem("Heavy", "BHEAVY");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_PLATESTOASSIGN_FIGO", _parameter);
@@ -622,6 +623,16 @@ namespace Data
                 _mapping.AddItem("PaidAmount", "NPAIDAMOUNT");
                 _mapping.AddItem("AmountRate", "NRATE");
                 _mapping.AddItem("DateRate", "DDATERATE");
+                _mapping.AddItem("Serie", "VSERIE");
+                _mapping.AddItem("Control", "VCONTROL");
+                _mapping.AddItem("Tax", "NTAX");
+                _mapping.AddItem("WithholdTax", "NWITHHOLDTAX");
+                _mapping.AddItem("Base", "NBASE");
+                _mapping.AddItem("AmountTax", "NAMOUNTTAX");
+                _mapping.AddItem("AmountNonTax", "NAMOUNTNONTAX");
+                _mapping.AddItem("Sust", "NSUST");
+                _mapping.AddItem("Secuence", "NSECUENCE");
+                _mapping.AddItem("Date", "DDATE");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_ACCOUNTRECEIVABLE_CONSOLIDATED", _parameter);

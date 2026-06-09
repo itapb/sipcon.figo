@@ -110,6 +110,18 @@ namespace Models
         /// <summary>FE_TASA_CAMBIO</summary>
         public DateTime? DateRate { get; set; }
 
+
+        // atributos nuevos de la factura
+        public string Serie { get; set; } = "";
+        public string Control { get; set; } = "";
+        public decimal Tax { get; set; }
+        public decimal WithholdTax { get; set; }
+        public decimal Base { get; set; }
+        public decimal AmountTax { get; set; }
+        public decimal AmountNonTax { get; set; }
+        public decimal Sust { get; set; }
+        public int Secuence { get; set; }
+
     }
 
 
