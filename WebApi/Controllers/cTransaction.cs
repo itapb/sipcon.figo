@@ -175,8 +175,6 @@ namespace WebApi.Controllers
 
         #endregion
 
-
-
         #region  RECEPCION DE VEHICULOS
 
 
@@ -201,7 +199,6 @@ namespace WebApi.Controllers
         }
 
         #endregion
-
 
         #region  DESPACHO DE VEHICULOS
         [HttpPost("PostVehicleDispatches")]
@@ -566,9 +563,32 @@ namespace WebApi.Controllers
         }
 
 
-  
+
         #endregion
 
+        #region DEVOLUCIONES
+        [EndpointDescription("Registrar Devoluciones de facturas de repuestos")]
+        [HttpPost("PostRefunds")]
+        public async Task<IActionResult> PostRefunds([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.Refund> _listRefund)
+        {
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                response = await _dTransaction.PostRefunds(_listRefund);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+
+        #endregion
 
     }
 }

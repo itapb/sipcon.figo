@@ -78,6 +78,7 @@ namespace Data
                 _mapping.AddItem("InnerCode", "VINNERCODE");
                 _mapping.AddItem("Quantity", "IDISPATCHED");
                 _mapping.AddItem("Serial", "VSERIAL");
+                _mapping.AddItem("SaleOrderType", "VSALEORDERTYPE");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_DISPATCHSTOINVOINCING_FIGO", null);
@@ -750,6 +751,46 @@ namespace Data
             }
             return _response;
         }
+        #endregion
+
+        #region DEVOLUCION
+
+        public async Task<Response<Models.Result>> PostRefunds(List<Models.Refund> _list)
+        {
+            await _semaphore.WaitAsync(Util.Setting.TimeOut);
+            try
+            {
+                return await _PostRefunds(_list);
+            }
+            finally
+            {
+                _semaphore.Release();
+            }
+        }
+        private async Task<Response<Models.Result>> _PostRefunds(List<Models.Refund> _list)
+        {
+            Response<Models.Result> _response = new Response<Models.Result>();
+            try
+            {
+                string _jsonstring = Util.Json.ConvertToJsonString(_list);
+                Parameter _parameter = new Parameter();
+                _parameter.AddSqlParameter("@DATA", _jsonstring);
+
+                Mapping _mapping = new Mapping();
+                _mapping.SetDefaultPostMapping();
+
+                Util.Data _data = Util.Data.GetInstance();
+                DataTable _table = await _data.GetDataTable("USP_POST_REFUNDS_FIGO", _parameter);
+                _response.Data = _data.GetItem<Models.Result>(_mapping, _table);
+                _response.SetPostResponse();
+            }
+            catch (Exception ex)
+            {
+                _response.SetError(ex);
+            }
+            return _response;
+        }
+
         #endregion
 
     }
