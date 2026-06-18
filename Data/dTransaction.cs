@@ -79,6 +79,7 @@ namespace Data
                 _mapping.AddItem("Quantity", "IDISPATCHED");
                 _mapping.AddItem("Serial", "VSERIAL");
                 _mapping.AddItem("SaleOrderType", "VSALEORDERTYPE");
+                _mapping.AddItem("Comment", "VCOMMENT");
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_DISPATCHSTOINVOINCING_FIGO", null);

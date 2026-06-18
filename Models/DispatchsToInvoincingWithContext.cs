@@ -20,6 +20,10 @@ namespace Models
         /// <summary>Rif del cliente o concesionario, quien recibe del despacho</summary>
         [SwaggerIgnore] public string? DealerVat { get; set; } = string.Empty;
 
+        [SwaggerIgnore] public string? SaleOrderType { get; set; } = string.Empty;
+
+        [SwaggerIgnore] public string? Comment { get; set; } = string.Empty;
+
         [SwaggerIgnore] public List<Details> Detail { get; set; } = new();
     }
 }

@@ -19,7 +19,6 @@ namespace Models
         /// <summary>Serial del respueto despachado, en caso de aplicar</summary>
         [SwaggerIgnore] public string? Serial { get; set; } = string.Empty;
 
-        [SwaggerIgnore] public string? SaleOrderType { get; set; } = string.Empty;
     }
 
 }

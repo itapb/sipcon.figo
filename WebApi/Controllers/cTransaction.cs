@@ -70,17 +70,19 @@ namespace WebApi.Controllers
                 var flat = await _dTransaction.GetDispatchsToInvoicing();
                  
                 var grouped = flat.Data
-                    .GroupBy(x => new { x.Reference, x.SupplierVat, x.DealerVat })
+                    .GroupBy(x => new { x.Reference, x.SupplierVat, x.DealerVat,x.SaleOrderType,x.Comment })
                     .Select(g => new Models.DispatchsToInvoincingWithContext
                     {
                         Reference = g.Key.Reference,
                         SupplierVat = g.Key.SupplierVat,
                         DealerVat = g.Key.DealerVat,
+                        SaleOrderType = g.Key.SaleOrderType,
+                        Comment = g.Key.Comment,
                         Detail = g.Select(d => new Models.Details
                         {
                             InnerCode = d.InnerCode,
                             Quantity = d.Quantity,
-                            Serial = d.Serial,
+                            Serial = d.Serial
                         }).ToList()
                     }).ToList();
 
