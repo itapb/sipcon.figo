@@ -27,5 +27,10 @@ namespace Models
         [SwaggerIgnore] public int? Quantity { get; set; }
         /// <summary>Serial del respueto despachado, en caso de aplicar</summary>
         [SwaggerIgnore] public string? Serial { get; set; } = string.Empty;
+        [SwaggerIgnore] public string? SaleOrderType { get; set; } = string.Empty;
+
+        [SwaggerIgnore] public string? Comment { get; set; } = string.Empty;
+
+
     }
 }
