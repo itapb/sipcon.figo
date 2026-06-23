@@ -37,6 +37,10 @@ namespace Models
         /// <summary>NUMERO COMPROBANTE RET/summary>
         [SwaggerIgnore] public string? Reference { get; set; }
 
+        /// <summary>FE_FORMA_PAGO </summary>
+        [Required] public DateTime? DateCreated { get; set; }
+
+
 
     }
 
@@ -82,6 +86,9 @@ namespace Models
 
         /// <summary>ORG_CO_ENTIDAD_FINANCIERA</summary>
         [SwaggerIgnore] public string? BankVat { get; set; }
+
+        /// <summary>FE_FORMA_PAGO </summary>
+        [Required] public DateTime? DateCreated { get; set; }
 
 
 
