@@ -84,6 +84,8 @@ namespace Models
         [Required(ErrorMessage = "El Date es obligatorio")]  
         public DateTime? Date { get; set; } = DateTime.Now;
 
+        public string? CreditLine { get; set; }
+
 
     }
 

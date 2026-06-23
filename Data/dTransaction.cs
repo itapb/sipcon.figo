@@ -477,6 +477,7 @@ namespace Data
                 _mapping.AddItem("Date", "DDATE");
                 _mapping.AddItem("Currency", "VCURRENCY");
                 _mapping.AddItem("DocumentType", "VDOCUMENTTYPE");
+                _mapping.AddItem("DateCreated", "DCREATED");
 
 
                 Util.Data _data = Util.Data.GetInstance();
@@ -528,7 +529,8 @@ namespace Data
                 _mapping.AddItem("Currency", "VCURRENCY");
                 _mapping.AddItem("BankAccount", "VACCOUNTNUMBER");
                 _mapping.AddItem("BankVat", "VVATBANK");
-        
+                _mapping.AddItem("DateCreated", "DCREATED");
+
 
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_PAYMENTDETAILS_CONSOLIDATED", _parameter);
@@ -576,6 +578,7 @@ namespace Data
                 _mapping.AddItem("Currency", "VCURRENCY");
                 _mapping.AddItem("DocumentType", "VDOCUMENTTYPE");
                 _mapping.AddItem("Reference", "VREFERENCE");
+                _mapping.AddItem("DateCreated", "DCREATED");
                 Util.Data _data = Util.Data.GetInstance();
                 DataTable _table = await _data.GetDataTable("USP_GET_RETENTION_CONSOLIDATED", _parameter);
                 _response.Data = _data.GetList<Models.Document>(_mapping, _table);
