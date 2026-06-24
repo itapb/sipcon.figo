@@ -593,7 +593,7 @@ namespace WebApi.Controllers
         #endregion
 
         #region VEHICULOS VENDIDOS PM
-        [HttpGet("GetVehiclesInvoiced")]
+        [HttpGet("GetVehiclesInvoicedPM")]
         public async Task<IActionResult> GetVehiclesInvoiced(
         [FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
         {
@@ -621,8 +621,8 @@ namespace WebApi.Controllers
             }
         }
 
-        [HttpPost("PostVehiclesInvoicedAsinc")]
-        public async Task<IActionResult> PostVehiclesInvoicedAsinc([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.VehicleInvoicedAsinc> _list)
+        [HttpPost("PostVehiclesInvoicedPM")]
+        public async Task<IActionResult> PostVehiclesInvoiced([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.VehicleInvoicedAsinc> _list)
         {
             try
             {
