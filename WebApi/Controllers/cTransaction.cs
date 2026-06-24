@@ -592,5 +592,56 @@ namespace WebApi.Controllers
 
         #endregion
 
+        #region VEHICULOS VENDIDOS PM
+        [HttpGet("GetVehiclesInvoicedPM")]
+        public async Task<IActionResult> GetVehiclesInvoiced(
+        [FromHeader(Name = "X-API-KEY")] string apiKey, string supplierVat)
+        {
+            try
+            {
+                var response = new Models.Response<List<Models.VehicleInvoiced>>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+
+                var flat = await _dTransaction.GetVehiclesInvoiced(supplierVat);
+                var result = new Models.Response<List<Models.VehicleInvoiced>>();
+                result.Total = flat.Total;
+                result.Processed = flat.Processed;
+                result.Message = flat.Message;
+                result.Data = flat.Data;
+
+                return StatusCode(result.Status, result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+
+        [HttpPost("PostVehiclesInvoicedPM")]
+        public async Task<IActionResult> PostVehiclesInvoiced([FromHeader(Name = "X-API-KEY")] string apiKey, List<Models.VehicleInvoicedAsinc> _list)
+        {
+            try
+            {
+                var response = new Models.Response<Models.Result>();
+                if (apiKey != Util.Setting.ApiKey)
+                {
+                    response.SetError(new Exception("API KEY INVALIDA"));
+                    return StatusCode(StatusCodes.Status401Unauthorized, response);
+                }
+                response = await _dTransaction.PostVehiclesInvoicedAsinc(_list);
+                return StatusCode(response.Status, response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status409Conflict, ex.Message);
+            }
+        }
+
+
+        #endregion
     }
 }
